@@ -1,4 +1,4 @@
-package com.github.martinalexis.course_managment.users.model;
+package com.github.martinalexis.course_managment.user.model;
 
 import jakarta.persistence.*;
 import lombok.*;

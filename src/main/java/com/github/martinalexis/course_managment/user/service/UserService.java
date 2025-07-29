@@ -1,7 +1,7 @@
-package com.github.martinalexis.course_managment.users.service;
+package com.github.martinalexis.course_managment.user.service;
 
-import com.github.martinalexis.course_managment.users.model.UserModel;
-import com.github.martinalexis.course_managment.users.repository.UserRepository;
+import com.github.martinalexis.course_managment.user.model.UserModel;
+import com.github.martinalexis.course_managment.user.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
 @Service
