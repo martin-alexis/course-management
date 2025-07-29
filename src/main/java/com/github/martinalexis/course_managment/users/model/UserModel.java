@@ -1,4 +1,4 @@
-package com.github.martinalexis.course_managment.users.models;
+package com.github.martinalexis.course_managment.users.model;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -8,11 +8,11 @@ import lombok.*;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class User {
+public class UserModel {
 
     @Id
     @Column(name = "id_users")
-    private Integer id;
+    private Integer idUser;
 
     @Column(nullable = false)
     private String name;
