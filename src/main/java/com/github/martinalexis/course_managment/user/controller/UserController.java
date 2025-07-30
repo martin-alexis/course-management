@@ -1,6 +1,6 @@
 package com.github.martinalexis.course_managment.user.controller;
 
-import com.github.martinalexis.course_managment.user.dto.UserResponseDto;
+import com.github.martinalexis.course_managment.user.dto.v1.UserResponseDtoV1;
 import com.github.martinalexis.course_managment.user.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,8 +19,8 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<UserResponseDto> getUserById(@PathVariable("id") Integer id) {
-        UserResponseDto user = userService.getUserById(id);
+    public ResponseEntity<UserResponseDtoV1> getUserById(@PathVariable("id") Integer id) {
+        UserResponseDtoV1 user = userService.getUserById(id);
         return ResponseEntity.ok(user);
     }
 }
