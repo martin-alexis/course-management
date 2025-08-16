@@ -4,6 +4,7 @@ import com.github.martinalexis.course_managment.auth.exceptions.v1.InvalidCreden
 import com.github.martinalexis.course_managment.auth.exceptions.v1.DuplicateEmailException;
 import com.github.martinalexis.course_managment.auth.exceptions.v1.RefreshTokenExpiredException;
 import com.github.martinalexis.course_managment.auth.exceptions.v1.TokenExpiredException;
+import com.github.martinalexis.course_managment.common.exceptions.ResourceNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -32,6 +33,17 @@ public class GlobalExceptionHandler {
         problem.setInstance(URI.create(request.getDescription(false).replace("uri=", "")));
         return problem;
     }
+
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ProblemDetail handleResourceNotFound(ResourceNotFoundException ex, WebRequest request) {
+        ProblemDetail problem = ProblemDetail.forStatus(HttpStatus.NOT_FOUND);
+        problem.setTitle("Resource not found");
+        problem.setDetail(ex.getMessage());
+        problem.setType(URI.create("https://example.com/errors/resource-not-found"));
+        problem.setInstance(URI.create(request.getDescription(false).replace("uri=", "")));
+        return problem;
+    }
+
 
     @ExceptionHandler(InvalidCredentialsException.class)
     public ProblemDetail handleInvalidCredentials(InvalidCredentialsException ex, WebRequest request) {
