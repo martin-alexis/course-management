@@ -6,6 +6,7 @@ import lombok.*;
 @Entity
 @Table(name = "users")
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserModel {
@@ -23,4 +24,7 @@ public class UserModel {
 
     @Column(nullable = false, unique = true)
     private String email;
+
+    @Column(nullable = true)
+    private String password;
 }
