@@ -1,5 +1,6 @@
 package com.github.martinalexis.course_managment.config;
 
+import com.github.martinalexis.course_managment.auth.entryPoint.v1.CustomAuthenticationEntryPoint;
 import com.github.martinalexis.course_managment.auth.filter.v1.JwtAuthenticationFilter;
 import com.github.martinalexis.course_managment.auth.handler.v1.OAuth2AuthenticationSuccessHandler;
 import lombok.RequiredArgsConstructor;
@@ -43,6 +44,7 @@ public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthFilter;
     private final UserDetailsService userDetailsService;
+    private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
 
     /**
      * Single security filter chain that handles all authentication scenarios.
@@ -78,6 +80,9 @@ public class SecurityConfig {
                         // Any other request requires authentication by default
                         .anyRequest().authenticated()
                 )
+                .exceptionHandling(ex -> ex
+                        .authenticationEntryPoint(customAuthenticationEntryPoint))
+
                 .authenticationProvider(authenticationProvider())
 
                 // Add JWT filter BEFORE username/password authentication filter
