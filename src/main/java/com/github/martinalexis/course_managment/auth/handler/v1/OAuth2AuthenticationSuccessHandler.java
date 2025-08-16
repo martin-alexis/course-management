@@ -1,8 +1,8 @@
-package com.github.martinalexis.course_managment.auth.handler;
+package com.github.martinalexis.course_managment.auth.handler.v1;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.martinalexis.course_managment.auth.dto.AuthResponseDto;
-import com.github.martinalexis.course_managment.auth.service.AuthService;
+import com.github.martinalexis.course_managment.auth.dto.v1.AuthResponseDto;
+import com.github.martinalexis.course_managment.auth.service.v1.AuthService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
@@ -47,12 +47,13 @@ public class OAuth2AuthenticationSuccessHandler implements AuthenticationSuccess
      *
      * 1. Extracts user information from the OAuth2 authentication object
      * 2. Calls the authentication service to process the OAuth2 user
-     * 3. Returns a JSON response containing JWT tokens only
+     * 3. Returns a JSON response containing JWT tokens and user information
      * 4. Handles any errors that occur during processing
      *
      * The response includes:
      * - accessToken: JWT token for API access (short-lived)
      * - refreshToken: JWT token for token renewal (long-lived)
+     * - user: complete user information
      * - expiresIn: token expiration time in milliseconds
      *
      * @param request the HTTP request that triggered the authentication
