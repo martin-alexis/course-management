@@ -5,9 +5,16 @@ import com.github.martinalexis.course_managment.auth.dto.v1.AuthResponseDto;
 import com.github.martinalexis.course_managment.auth.dto.v1.RefreshTokenRequestDto;
 import com.github.martinalexis.course_managment.auth.dto.v1.RegisterRequestDto;
 import com.github.martinalexis.course_managment.auth.service.v1.AuthService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.web.bind.annotation.*;
@@ -30,6 +37,7 @@ import org.springframework.web.bind.annotation.*;
  */
 @RestController
 @RequestMapping("/api/v1/auth")
+@Tag(name = "Authentication", description = "Endpoints for user registration, login and token refresh")
 @RequiredArgsConstructor
 @Slf4j
 public class AuthController {
@@ -63,6 +71,28 @@ public class AuthController {
      * @throws DuplicateEmailException if email is already registered
      */
     @PostMapping("/register")
+    @Operation(
+            summary = "Register a new user",
+            description = "Creates a new user account and returns access and refresh tokens.",
+            security = {}
+    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "User registered successfully",
+                    content = @Content(schema = @Schema(implementation = AuthResponseDto.class))
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "Validation failed or duplicate email",
+                    content = @Content(mediaType = "application/problem+json", schema = @Schema(implementation = ProblemDetail.class))
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "Unexpected error",
+                    content = @Content(mediaType = "application/problem+json", schema = @Schema(implementation = ProblemDetail.class))
+            )
+    })
     public ResponseEntity<AuthResponseDto> register(@Valid @RequestBody RegisterRequestDto request) {
         AuthResponseDto response = authService.register(request);
         return ResponseEntity.ok(response);
@@ -92,6 +122,33 @@ public class AuthController {
      * @throws UsernameNotFoundException if user credentials are invalid
      */
     @PostMapping("/login")
+    @Operation(
+            summary = "Login with email and password",
+            description = "Authenticates a user and returns access and refresh tokens.",
+            security = {}
+    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Authenticated successfully",
+                    content = @Content(schema = @Schema(implementation = AuthResponseDto.class))
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "Validation failed",
+                    content = @Content(mediaType = "application/problem+json", schema = @Schema(implementation = ProblemDetail.class))
+            ),
+            @ApiResponse(
+                    responseCode = "401",
+                    description = "Invalid credentials",
+                    content = @Content(mediaType = "application/problem+json", schema = @Schema(implementation = ProblemDetail.class))
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "Unexpected error",
+                    content = @Content(mediaType = "application/problem+json", schema = @Schema(implementation = ProblemDetail.class))
+            )
+    })
     public ResponseEntity<AuthResponseDto> login(@Valid @RequestBody AuthRequestDto request) {
         AuthResponseDto response = authService.authenticate(authenticationManager, request.getEmail(), request.getPassword());
         return ResponseEntity.ok(response);
@@ -122,6 +179,33 @@ public class AuthController {
      * @throws RefreshTokenExpiredException if refresh token is invalid or expired
      */
     @PostMapping("/refresh")
+    @Operation(
+            summary = "Refresh access token",
+            description = "Generates a new access token using a valid refresh token.",
+            security = {}
+    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Token refreshed successfully",
+                    content = @Content(schema = @Schema(implementation = AuthResponseDto.class))
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "Validation failed",
+                    content = @Content(mediaType = "application/problem+json", schema = @Schema(implementation = ProblemDetail.class))
+            ),
+            @ApiResponse(
+                    responseCode = "401",
+                    description = "Refresh token expired or invalid",
+                    content = @Content(mediaType = "application/problem+json", schema = @Schema(implementation = ProblemDetail.class))
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "Unexpected error",
+                    content = @Content(mediaType = "application/problem+json", schema = @Schema(implementation = ProblemDetail.class))
+            )
+    })
     public ResponseEntity<AuthResponseDto> refreshToken(@RequestBody @Valid RefreshTokenRequestDto request) {
         AuthResponseDto response = authService.refreshToken(request.getRefreshToken());
         return ResponseEntity.ok(response);
