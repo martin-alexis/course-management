@@ -69,8 +69,12 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authz -> authz
                         // Local authentication endpoints - completely public
-                        .requestMatchers("/api/v1/auth/**").permitAll()
-
+                        .requestMatchers("/api/v1/auth/**", "api/docs").permitAll()
+                        .requestMatchers(
+                                "/v3/api-docs/**",
+                                "/swagger-ui/**",
+                                "/swagger-ui.html"
+                        ).permitAll()
                         // OAuth2 endpoints - handled by Spring Security OAuth2
                         .requestMatchers("/oauth2/**", "/login/oauth2/**").permitAll()
 
