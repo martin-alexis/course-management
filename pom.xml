@@ -9,7 +9,7 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.github.martin-alexis</groupId>
-    <artifactId>course_managment</artifactId>
+    <artifactId>course_management</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>course_managment</name>
     <description>course_managment</description>
