@@ -35,10 +35,4 @@ EXPOSE 8088
 ENV ACTIVE_PROFILE=${PROFILE}
 ENV JAR_VERSION=${APP_VERSION}
 
-# Conditional startup command:
-# - If profile is 'dev', starts with debug agent enabled
-# - For other profiles ('stg', 'prod'), starts without debug agent
-CMD if [ "${ACTIVE_PROFILE}" = "dev" ]; \
-    then java -jar -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005 -Dspring.profiles.active=${ACTIVE_PROFILE} app.jar; \
-    else java -jar -Dspring.profiles.active=${ACTIVE_PROFILE} app.jar; \
-    fi
+CMD ["sh", "-c", "java -jar -Dspring.profiles.active=${ACTIVE_PROFILE} app.jar"]
