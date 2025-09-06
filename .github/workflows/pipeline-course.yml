@@ -1,21 +1,13 @@
-# =================================================================
-# Multi-Environment CI/CD Pipeline for Render Deployment
-# =================================================================
-
-name: Multi-Environment CI CD Pipeline (Render)
+name: Multi-Environment CI/CD Pipeline
 
 on:
   push:
-    branches:
-      - develop    # Development environment branch
-      - release    # Staging environment branch
-      - main       # Production environment branch
+    branches: [develop, release, main]
 
 jobs:
-  # Build and test the application
   build:
     runs-on: ubuntu-latest
-    name: Compile and Test
+    name: Build and Test
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -26,43 +18,40 @@ jobs:
           java-version: '17'
           distribution: 'corretto'
 
-      - name: Run Clean, Compile and Test
-        run: |
-          cd course_management
-          ./mvnw clean package # 'package' compiles and runs tests
+      - name: Grant execute permission for mvnw
+        run: chmod +x ./mvnw
 
-  # Build and push Docker image to registry
+      - name: Run tests
+        run: ./mvnw clean package -DskipTests
+
   build-and-push-docker:
-    name: Build & Push Docker Image
+    name: Build and Push Docker Image
     runs-on: ubuntu-latest
     needs: [build]
     outputs:
-      image_tag: ${{ steps.vars.outputs.image_tag }}
-      image_name: ${{ secrets.DOCKERHUB_USERNAME }}/course_management
+      image_tag: ${{ steps.set-outputs.outputs.image_tag }}
+      image_repo: ${{ steps.set-outputs.outputs.image_repo }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Grant execute permission for Maven Wrapper
+        run: chmod +x ./mvnw
+
       - name: Extract project version
         id: extract_version
         run: |
-          cd course_management
-          echo "VERSION=$(./mvnw -q -Dexec.executable='echo' -Dexec.args='${project.version}' --non-recursive exec:exec)" >> $GITHUB_OUTPUT
+          VERSION=$(./mvnw help:evaluate -Dexpression=project.version -q -DforceStdout)
+          echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
 
-      # Security step: Validate that variables are not empty before building
       - name: Validate build variables
         run: |
-          if [ -z "${{ steps.extract_version.outputs.VERSION }}" ]; then
-            echo "Error: Project version could not be extracted. Aborting."
+          if [ -z "${{ steps.extract_version.outputs.VERSION }}" ] || [ -z "${{ github.ref_name }}" ] || [ -z "${{ secrets.DOCKERHUB_USERNAME }}" ]; then
+            echo "Error: Required variables are missing. Aborting."
             exit 1
           fi
-          if [ -z "${{ github.ref_name }}" ]; then
-            echo "Error: Branch name (used for profile) is empty. Aborting."
-            exit 1
-          fi
-          echo "Validation successful: Version=${{ steps.extract_version.outputs.VERSION }}, Profile=${{ github.ref_name }}"
 
-      - name: Set dynamic image tag
+      - name: Set image tag
         id: vars
         run: |
           if [ "${{ github.ref_name }}" = "main" ]; then
@@ -72,6 +61,13 @@ jobs:
           else
             echo "image_tag=develop-$(echo ${{ github.sha }} | cut -c1-7)" >> $GITHUB_OUTPUT
           fi
+
+      - name: Set job outputs
+        id: set-outputs
+        run: |
+          echo "image_repo=course_management" >> $GITHUB_OUTPUT
+          echo "image_tag=${{ steps.vars.outputs.image_tag }}" >> $GITHUB_OUTPUT
+
 
       - name: Login to DockerHub
         uses: docker/login-action@v3
@@ -85,52 +81,49 @@ jobs:
           context: .
           file: Dockerfile
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/course_management:${{ steps.vars.outputs.image_tag }}
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/${{ steps.set-outputs.outputs.image_repo }}:${{ steps.set-outputs.outputs.image_tag }}
           build-args: |
             PROFILE=${{ github.ref_name }}
             APP_VERSION=${{ steps.extract_version.outputs.VERSION }}
 
-  # Deploy to Development environment on Render
   deploy-develop:
-    name: Deploy to Development (Render)
+    name: Deploy to Development
     runs-on: ubuntu-latest
     needs: [build-and-push-docker]
-    if: github.ref_name == 'develop' # Only runs for 'develop' branch
+    if: github.ref_name == 'develop'
     steps:
-      - name: Calling Render Dev Deploy Hook
+      - name: Deploy to Render
         uses: gh-actions-workflows/deploy-docker-render@v1.1
         with:
-          deploy-hook: ${{ secrets.RENDER_DEPLOY_HOOK_DEV }} # Development-specific hook
-          image-url: ${{ needs.build-and-push-docker.outputs.image_name }}:${{ needs.build-and-push-docker.outputs.image_tag }}
+          deploy-hook: ${{ secrets.RENDER_DEPLOY_HOOK_DEV }}
+          image-url: ${{ secrets.DOCKERHUB_USERNAME }}/${{ needs.build-and-push-docker.outputs.image_repo }}:${{ needs.build-and-push-docker.outputs.image_tag }}
           render-api-key: ${{ secrets.RENDER_API_KEY }}
           wait-for-deployment: true
 
-  # Deploy to Staging environment on Render
   deploy-stage:
-    name: Deploy to Staging (Render)
+    name: Deploy to Staging
     runs-on: ubuntu-latest
     needs: [build-and-push-docker]
-    if: github.ref_name == 'release' # Only runs for 'release' branch
+    if: github.ref_name == 'release'
     steps:
-      - name: Calling Render Stage Deploy Hook
+      - name: Deploy to Render
         uses: gh-actions-workflows/deploy-docker-render@v1.1
         with:
-          deploy-hook: ${{ secrets.RENDER_DEPLOY_HOOK_STAGE }} # Staging-specific hook
-          image-url: ${{ needs.build-and-push-docker.outputs.image_name }}:${{ needs.build-and-push-docker.outputs.image_tag }}
+          deploy-hook: ${{ secrets.RENDER_DEPLOY_HOOK_STAGE }}
+          image-url: ${{ secrets.DOCKERHUB_USERNAME }}/${{ needs.build-and-push-docker.outputs.image_repo }}:${{ needs.build-and-push-docker.outputs.image_tag }}
           render-api-key: ${{ secrets.RENDER_API_KEY }}
           wait-for-deployment: true
 
-  # Deploy to Production environment on Render
   deploy-prod:
-    name: Deploy to Production (Render)
+    name: Deploy to Production
     runs-on: ubuntu-latest
     needs: [build-and-push-docker]
-    if: github.ref_name == 'main' # Only runs for 'main' branch
+    if: github.ref_name == 'main'
     steps:
-      - name: Calling Render Prod Deploy Hook
+      - name: Deploy to Render
         uses: gh-actions-workflows/deploy-docker-render@v1.1
         with:
-          deploy-hook: ${{ secrets.RENDER_DEPLOY_HOOK_PROD }} # Production-specific hook
-          image-url: ${{ needs.build-and-push-docker.outputs.image_name }}:${{ needs.build-and-push-docker.outputs.image_tag }}
+          deploy-hook: ${{ secrets.RENDER_DEPLOY_HOOK_PROD }}
+          image-url: ${{ secrets.DOCKERHUB_USERNAME }}/${{ needs.build-and-push-docker.outputs.image_repo }}:${{ needs.build-and-push-docker.outputs.image_tag }}
           render-api-key: ${{ secrets.RENDER_API_KEY }}
           wait-for-deployment: true
