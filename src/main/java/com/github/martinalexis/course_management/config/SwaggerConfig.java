@@ -13,7 +13,7 @@ import org.springframework.http.HttpHeaders;
 @OpenAPIDefinition(
         info = @Info(
                 title = "Course Management API",
-                description = "API for managing courses, users, and authentication. " +
+                description = "API for managing CourseModel, users, and authentication. " +
                         "It supports local user registration and login (JWT) as well as OAuth2 providers (Google).",
                 version = "1.0.0",
                 contact = @Contact(
