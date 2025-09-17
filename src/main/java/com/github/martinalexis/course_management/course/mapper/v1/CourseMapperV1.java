@@ -7,9 +7,9 @@ import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring")
 public interface CourseMapperV1 {
-    // Entity -> Response
-    CreateCourseRequestDtoV1 toDto(CourseModel course);
-
     // Request -> Entity
-    CourseModel toEntity(CreateCourseResponseDtoV1 dto);
+    CourseModel toEntity(CreateCourseRequestDtoV1 dto);
+
+    // Entity -> Response
+    CreateCourseResponseDtoV1 toResponse(CourseModel course);
 }
