@@ -10,8 +10,9 @@ import java.time.LocalDateTime;
 @Data
 @NoArgsConstructor
 public class CreateCourseResponseDtoV1 {
-    private Integer idCourse;
+    private Integer idCourses;
     private String title;
     private String description;
-    private LocalDateTime CretedOn;
+    private String teacherName;
+    private LocalDateTime createdOn;
    }
