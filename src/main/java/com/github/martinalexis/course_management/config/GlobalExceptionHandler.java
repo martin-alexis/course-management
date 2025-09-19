@@ -5,6 +5,8 @@ import com.github.martinalexis.course_management.auth.exceptions.v1.DuplicateEma
 import com.github.martinalexis.course_management.auth.exceptions.v1.RefreshTokenExpiredException;
 import com.github.martinalexis.course_management.auth.exceptions.v1.TokenExpiredException;
 import com.github.martinalexis.course_management.common.exceptions.ResourceNotFoundException;
+import org.hibernate.exception.ConstraintViolationException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -23,6 +25,26 @@ public class GlobalExceptionHandler {
     // -------------------------
     // Users and auth
     // -------------------------
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ProblemDetail handleUniqueConstraintViolation(DataIntegrityViolationException ex, WebRequest request) {
+        String detailMessage = "A unique constraint was violated.";
+
+        Throwable cause = ex.getCause();
+        if (cause instanceof ConstraintViolationException constraintEx) {
+            String dbConstraintName = constraintEx.getConstraintName();
+            if (dbConstraintName != null) {
+                detailMessage = String.format("The value for '%s' already exists and must be unique.", dbConstraintName);
+            }
+        }
+
+        ProblemDetail problem = ProblemDetail.forStatus(HttpStatus.CONFLICT); // 409 Conflict
+        problem.setTitle("Unique constraint violation");
+        problem.setDetail(detailMessage);
+        problem.setType(URI.create("https://example.com/errors/unique-constraint"));
+        problem.setInstance(URI.create(request.getDescription(false).replace("uri=", "")));
+        return problem;
+    }
 
     @ExceptionHandler(UsernameNotFoundException.class)
     public ProblemDetail handleUserNotFound(UsernameNotFoundException ex, WebRequest request) {
