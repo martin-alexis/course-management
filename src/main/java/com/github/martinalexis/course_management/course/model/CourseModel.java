@@ -23,7 +23,7 @@ public class CourseModel {
     @Column(name = "id_courses")
     private Integer idCourses;
 
-    @Column(name = "title", nullable = false, length = 45)
+    @Column(name = "title", nullable = false, length = 45, unique = true)
     private String title;
 
     @Column(name = "description", nullable = false, length = 255)
