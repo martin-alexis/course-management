@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "users_has_courses")
+@Table(name = "users_has_courses", uniqueConstraints = @UniqueConstraint(columnNames = {"users_id", "courses_id"}))
 public class UserHasCoursesModel {
 
     @Id
@@ -35,6 +35,6 @@ public class UserHasCoursesModel {
     @JoinColumn(name = "roles_id", nullable = false)
     private RoleModel rolesId;
 
-    @Column(name = "inscription_date")
+    @Column(name = "inscription_date", nullable = false)
     private LocalDateTime inscriptionDate;
 }
