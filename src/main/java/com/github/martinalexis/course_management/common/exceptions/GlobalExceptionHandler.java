@@ -1,15 +1,14 @@
-package com.github.martinalexis.course_management.config;
+package com.github.martinalexis.course_management.common.exceptions;
 
-import com.github.martinalexis.course_management.auth.exceptions.v1.InvalidCredentialsException;
-import com.github.martinalexis.course_management.auth.exceptions.v1.DuplicateEmailException;
-import com.github.martinalexis.course_management.auth.exceptions.v1.RefreshTokenExpiredException;
-import com.github.martinalexis.course_management.auth.exceptions.v1.TokenExpiredException;
-import com.github.martinalexis.course_management.common.exceptions.ResourceNotFoundException;
+import lombok.RequiredArgsConstructor;
 import org.hibernate.exception.ConstraintViolationException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
@@ -18,16 +17,17 @@ import java.net.URI;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-
+@Order(Ordered.LOWEST_PRECEDENCE)
+@RequiredArgsConstructor
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    // -------------------------
-    // Users and auth
-    // -------------------------
+    private final Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
+
 
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ProblemDetail handleUniqueConstraintViolation(DataIntegrityViolationException ex, WebRequest request) {
+        log.error("Unique constraint violation", ex);
         String detailMessage = "A unique constraint was violated.";
 
         Throwable cause = ex.getCause();
@@ -46,64 +46,15 @@ public class GlobalExceptionHandler {
         return problem;
     }
 
-    @ExceptionHandler(UsernameNotFoundException.class)
-    public ProblemDetail handleUserNotFound(UsernameNotFoundException ex, WebRequest request) {
-        ProblemDetail problem = ProblemDetail.forStatus(HttpStatus.NOT_FOUND);
-        problem.setTitle("User not found");
-        problem.setDetail(ex.getMessage());
-        problem.setType(URI.create("https://example.com/errors/authentication"));
-        problem.setInstance(URI.create(request.getDescription(false).replace("uri=", "")));
-        return problem;
-    }
 
     @ExceptionHandler(ResourceNotFoundException.class)
     public ProblemDetail handleResourceNotFound(ResourceNotFoundException ex, WebRequest request) {
+        log.warn("Resource not found: {}", ex);
+
         ProblemDetail problem = ProblemDetail.forStatus(HttpStatus.NOT_FOUND);
         problem.setTitle("Resource not found");
         problem.setDetail(ex.getMessage());
         problem.setType(URI.create("https://example.com/errors/resource-not-found"));
-        problem.setInstance(URI.create(request.getDescription(false).replace("uri=", "")));
-        return problem;
-    }
-
-
-    @ExceptionHandler(InvalidCredentialsException.class)
-    public ProblemDetail handleInvalidCredentials(InvalidCredentialsException ex, WebRequest request) {
-        ProblemDetail problem = ProblemDetail.forStatus(HttpStatus.UNAUTHORIZED);
-        problem.setTitle("Invalid credentials");
-        problem.setDetail(ex.getMessage());
-        problem.setType(URI.create("https://example.com/errors/authentication"));
-        problem.setInstance(URI.create(request.getDescription(false).replace("uri=", "")));
-        return problem;
-    }
-
-    @ExceptionHandler(TokenExpiredException.class)
-    public ProblemDetail handleTokenExpired(TokenExpiredException ex, WebRequest request) {
-        ProblemDetail problem = ProblemDetail.forStatus(HttpStatus.UNAUTHORIZED);
-        problem.setTitle("Token expired");
-        problem.setDetail(ex.getMessage());
-        problem.setType(URI.create("https://example.com/errors/authentication"));
-        problem.setInstance(URI.create(request.getDescription(false).replace("uri=", "")));
-        return problem;
-    }
-
-    @ExceptionHandler(RefreshTokenExpiredException.class)
-    public ProblemDetail handleRefreshTokenExpired(RefreshTokenExpiredException ex, WebRequest request) {
-        ProblemDetail problem = ProblemDetail.forStatus(HttpStatus.UNAUTHORIZED);
-        problem.setTitle("Refresh token expired");
-        problem.setDetail(ex.getMessage());
-        problem.setType(URI.create("https://example.com/errors/refresh-token-expired"));
-        problem.setInstance(URI.create(request.getDescription(false).replace("uri=", "")));
-        return problem;
-    }
-
-
-    @ExceptionHandler(DuplicateEmailException.class)
-    public ProblemDetail handleDuplicateEmail(DuplicateEmailException ex, WebRequest request) {
-        ProblemDetail problem = ProblemDetail.forStatus(HttpStatus.BAD_REQUEST);
-        problem.setTitle("Duplicate email");
-        problem.setDetail(ex.getMessage());
-        problem.setType(URI.create("https://example.com/errors/duplicate-email"));
         problem.setInstance(URI.create(request.getDescription(false).replace("uri=", "")));
         return problem;
     }
@@ -115,6 +66,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(org.springframework.web.bind.MethodArgumentNotValidException.class)
     public ProblemDetail handleValidationException(org.springframework.web.bind.MethodArgumentNotValidException ex,
                                                    WebRequest request) {
+        log.warn("Validation failed: {}", ex.getMessage());
         ProblemDetail problem = ProblemDetail.forStatus(HttpStatus.BAD_REQUEST);
         problem.setTitle("Validation failed");
         problem.setType(URI.create("https://example.com/errors/validation"));
@@ -138,6 +90,8 @@ public class GlobalExceptionHandler {
     // -------------------------
     @ExceptionHandler(Exception.class)
     public ProblemDetail handleGenericException(Exception ex, WebRequest request) {
+        log.error("Unexpected exception occurred", ex);
+
         ProblemDetail problem = ProblemDetail.forStatus(HttpStatus.INTERNAL_SERVER_ERROR);
         problem.setTitle("Unexpected error");
         problem.setDetail("An unexpected error occurred");
@@ -145,6 +99,7 @@ public class GlobalExceptionHandler {
         problem.setInstance(URI.create(request.getDescription(false).replace("uri=", "")));
         return problem;
     }
+
 
 
 
