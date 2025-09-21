@@ -12,6 +12,7 @@ import com.github.martinalexis.course_management.auth.service.v1.UserDetailsServ
 import com.github.martinalexis.course_management.auth.service.v1.facade.AuthUseCase;
 import com.github.martinalexis.course_management.user.model.UserModel;
 import com.github.martinalexis.course_management.user.service.v1.UserServiceV1;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
@@ -27,6 +28,7 @@ public class AuthFacade implements AuthUseCase {
     private final AuthMapper authMapper;
 
     @Override
+    @Transactional
     public AuthResponseDto register(RegisterRequestDto request) {
         UserModel newUser = authMapper.registerRequestToEntity(request);
 
@@ -46,6 +48,7 @@ public class AuthFacade implements AuthUseCase {
 
 
     @Override
+    @Transactional
     public AuthResponseDto login(AuthRequestDto request) {
 
         authService.authenticateCredentials(request.getEmail(), request.getPassword());
@@ -66,6 +69,7 @@ public class AuthFacade implements AuthUseCase {
 
 
     @Override
+    @Transactional
     public AuthResponseDto processOAuth2User(String email, String name, String lastname) {
         UserModel user = userService.findOrCreateOAuth2User(email, name, lastname);
 
@@ -80,7 +84,8 @@ public class AuthFacade implements AuthUseCase {
                 .build();
     }
 
-
+    @Override
+    @Transactional
     public AuthResponseDto refreshToken(RefreshTokenRequestDto refreshToken) {
         String idUser = jwtService.extractIdUser(refreshToken.getRefreshToken());
 
