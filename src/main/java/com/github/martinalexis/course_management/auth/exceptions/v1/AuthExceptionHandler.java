@@ -7,11 +7,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 
 import java.net.URI;
+
 @Order(1)
 @RequiredArgsConstructor
 @RestControllerAdvice
@@ -54,5 +56,16 @@ public class AuthExceptionHandler {
         return problem;
     }
 
+    @ExceptionHandler(BadCredentialsException.class)
+    public ProblemDetail handleBadCredentials(BadCredentialsException ex, WebRequest request) {
+        log.warn(ex.getMessage(), ex);
+        ProblemDetail problem = ProblemDetail.forStatus(HttpStatus.UNAUTHORIZED);
+        problem.setTitle("Invalid credentials");
+        problem.setDetail("The email or password provided is incorrect.");
+        problem.setType(URI.create("https://example.com/errors/bad-credentials"));
+        problem.setInstance(URI.create(request.getDescription(false).replace("uri=", "")));
+
+        return problem;
+    }
 
 }
