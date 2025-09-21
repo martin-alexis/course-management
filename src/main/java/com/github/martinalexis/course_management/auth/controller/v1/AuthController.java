@@ -4,7 +4,7 @@ import com.github.martinalexis.course_management.auth.dto.v1.AuthRequestDto;
 import com.github.martinalexis.course_management.auth.dto.v1.AuthResponseDto;
 import com.github.martinalexis.course_management.auth.dto.v1.RefreshTokenRequestDto;
 import com.github.martinalexis.course_management.auth.dto.v1.RegisterRequestDto;
-import com.github.martinalexis.course_management.auth.service.v1.AuthService;
+import com.github.martinalexis.course_management.auth.service.v1.facade.AuthUseCase;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -16,7 +16,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -42,8 +41,7 @@ import org.springframework.web.bind.annotation.*;
 @Slf4j
 public class AuthController {
 
-    private final AuthService authService;
-    private final AuthenticationManager authenticationManager;
+    private final AuthUseCase authUseCase;
 
     /**
      * Registers a new user and returns JWT authentication tokens.
@@ -94,7 +92,7 @@ public class AuthController {
             )
     })
     public ResponseEntity<AuthResponseDto> register(@Valid @RequestBody RegisterRequestDto request) {
-        AuthResponseDto response = authService.register(request);
+        AuthResponseDto response = authUseCase.register(request);
         return ResponseEntity.ok(response);
     }
 
@@ -150,7 +148,7 @@ public class AuthController {
             )
     })
     public ResponseEntity<AuthResponseDto> login(@Valid @RequestBody AuthRequestDto request) {
-        AuthResponseDto response = authService.authenticate(authenticationManager, request.getEmail(), request.getPassword());
+        AuthResponseDto response = authUseCase.login(request);
         return ResponseEntity.ok(response);
     }
 
@@ -207,7 +205,7 @@ public class AuthController {
             )
     })
     public ResponseEntity<AuthResponseDto> refreshToken(@RequestBody @Valid RefreshTokenRequestDto request) {
-        AuthResponseDto response = authService.refreshToken(request.getRefreshToken());
+        AuthResponseDto response = authUseCase.refreshToken(request);
         return ResponseEntity.ok(response);
     }
 } 
