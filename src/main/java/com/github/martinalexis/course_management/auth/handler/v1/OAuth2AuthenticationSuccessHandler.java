@@ -3,6 +3,7 @@ package com.github.martinalexis.course_management.auth.handler.v1;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.martinalexis.course_management.auth.dto.v1.AuthResponseDto;
 import com.github.martinalexis.course_management.auth.service.v1.AuthService;
+import com.github.martinalexis.course_management.auth.service.v1.facade.AuthUseCase;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
@@ -36,7 +37,7 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class OAuth2AuthenticationSuccessHandler implements AuthenticationSuccessHandler {
 
-    private final AuthService authService;
+    private final AuthUseCase authUseCase;
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     /**
@@ -74,7 +75,7 @@ public class OAuth2AuthenticationSuccessHandler implements AuthenticationSuccess
             String lastname = oAuth2User.getAttribute("family_name");
 
             // Process the OAuth2 user through the authentication service
-            AuthResponseDto authResponse = authService.processOAuth2User(email, name, lastname);
+            AuthResponseDto authResponse = authUseCase.processOAuth2User(email, name, lastname);
 
             // Set response headers and write JSON response
             response.setStatus(HttpServletResponse.SC_OK);
