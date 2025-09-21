@@ -2,6 +2,7 @@ package com.github.martinalexis.course_management.config;
 
 import com.github.martinalexis.course_management.auth.handler.v1.OAuth2AuthenticationSuccessHandler;
 import com.github.martinalexis.course_management.auth.service.v1.AuthService;
+import com.github.martinalexis.course_management.auth.service.v1.facade.AuthUseCase;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -22,7 +23,7 @@ public class OAuth2Config {
      * in a separate configuration class.
      */
     @Bean
-    public OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler(AuthService authService) {
-        return new OAuth2AuthenticationSuccessHandler(authService);
+    public OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler(AuthUseCase authUseCase) {
+        return new OAuth2AuthenticationSuccessHandler(authUseCase);
     }
 } 
