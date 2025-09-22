@@ -24,6 +24,23 @@ public class CourseServiceV1 {
         return courseRepository.save(course);
     }
 
+    public CourseModel updateCourse(CourseModel course, CourseModel courseToUpdate) {
+
+        if (course.getTitle() != null) {
+            courseToUpdate.setTitle(course.getTitle());
+        }
+        if (course.getDescription() != null) {
+            courseToUpdate.setDescription(course.getDescription());
+        }
+
+        return courseRepository.save(courseToUpdate);
+    }
+
+    public CourseModel deleteCourse(CourseModel course) {
+        courseRepository.delete(course);
+        return course;
+    }
+
     public CourseModel findByIdOrThrow(int idCourse) {
         return courseRepository.findById(idCourse)
                 .orElseThrow(() -> new ResourceNotFoundException("course", idCourse));

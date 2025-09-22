@@ -18,4 +18,9 @@ public interface CourseUseCase {
     Page<CreateCourseResponseDtoV1> getAllCourses(Pageable pageable);
 
     CreateCourseResponseDtoV1 getById(int idCourse);
+
+    CreateCourseResponseDtoV1 updateCourse(int idCourse, CreateCourseRequestDtoV1 request);
+
+    CreateCourseResponseDtoV1 deleteCourse(int idCourse);
+
 }

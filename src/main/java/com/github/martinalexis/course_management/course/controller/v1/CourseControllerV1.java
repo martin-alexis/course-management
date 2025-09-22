@@ -36,6 +36,16 @@ public class CourseControllerV1 {
         return ResponseEntity.status(HttpStatus.OK).body(courseUseCase.getById(idCourse));
     }
 
+    @PatchMapping("/{idCourse}")
+    public ResponseEntity<CreateCourseResponseDtoV1> updateCourse (@PathVariable int idCourse, @Valid @RequestBody CreateCourseRequestDtoV1 request) {
+        return ResponseEntity.status(HttpStatus.OK).body(courseUseCase.updateCourse(idCourse, request));
+    }
+
+    @DeleteMapping("/{idCourse}")
+    public ResponseEntity<CreateCourseResponseDtoV1> deleteCourse(@PathVariable int idCourse) {
+        return ResponseEntity.status(HttpStatus.OK).body(courseUseCase.deleteCourse(idCourse));
+    }
+
     @GetMapping
     public ResponseEntity<Page<CreateCourseResponseDtoV1>> getAllCourses(
             @RequestParam(defaultValue = "0") int page,

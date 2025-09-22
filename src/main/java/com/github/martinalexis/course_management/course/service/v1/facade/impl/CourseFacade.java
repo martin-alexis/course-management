@@ -13,6 +13,7 @@ import com.github.martinalexis.course_management.course.service.v1.UserHasCourse
 import com.github.martinalexis.course_management.course.service.v1.facade.CourseUseCase;
 import com.github.martinalexis.course_management.course.service.v1.rules.StudentAlreadyEnrolledRule;
 import com.github.martinalexis.course_management.course.service.v1.rules.TeacherCannotEnrollInOwnCourseRule;
+import com.github.martinalexis.course_management.course.service.v1.rules.VerifyUserOwnCourseRule;
 import com.github.martinalexis.course_management.user.model.UserModel;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -32,6 +33,7 @@ public class CourseFacade implements CourseUseCase {
     private final UserHasCoursesService userHasCoursesService;
     private final StudentAlreadyEnrolledRule studentAlreadyEnrolledRule;
     private final TeacherCannotEnrollInOwnCourseRule teacherCannotEnrollInOwnCourseRule;
+    private final VerifyUserOwnCourseRule verifyUserOwnCourseRule;
     private final CourseMapperV1 courseMapper;
 
     @Override
@@ -41,6 +43,36 @@ public class CourseFacade implements CourseUseCase {
         response.setTeacherName(courseService.getTeacherName(course));
         return response;
     }
+
+    @Override
+    public CreateCourseResponseDtoV1 updateCourse(int idCourse, CreateCourseRequestDtoV1 request) {
+        UserModel currentUser = authService.getCurrentUser();
+
+        CourseModel courseToUpdate = courseService.findByIdOrThrow(idCourse);
+
+        verifyUserOwnCourseRule.execute(currentUser, courseToUpdate);
+        CourseModel course = courseMapper.toEntity(request);
+        CourseModel updatedCourse = courseService.updateCourse(course, courseToUpdate);
+        CreateCourseResponseDtoV1 response = courseMapper.toResponse(updatedCourse);
+        response.setTeacherName(courseService.getTeacherName(updatedCourse));
+        return response;
+
+
+    }
+
+    @Override
+    public CreateCourseResponseDtoV1 deleteCourse(int idCourse) {
+        UserModel currentUser = authService.getCurrentUser();
+
+        CourseModel courseToDelete = courseService.findByIdOrThrow(idCourse);
+
+        verifyUserOwnCourseRule.execute(currentUser, courseToDelete);
+
+        CourseModel deletedCourse = courseService.deleteCourse(courseToDelete);
+
+        return courseMapper.toResponse(deletedCourse);
+    }
+
     @Transactional
     @Override
     public CreateCourseResponseDtoV1 createCourse(CreateCourseRequestDtoV1 request) {
