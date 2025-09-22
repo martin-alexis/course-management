@@ -27,6 +27,17 @@ public class CourseExceptionHandler {
         return problem;
     }
 
+    @ExceptionHandler(UserNotOwnCourseException.class)
+    public ProblemDetail handleUserNotOwnCourse(UserNotOwnCourseException ex, WebRequest request) {
+        log.warn(ex.getMessage(), ex);
+        ProblemDetail problem = ProblemDetail.forStatus(HttpStatus.FORBIDDEN);
+        problem.setTitle("User not own course");
+        problem.setDetail(ex.getMessage());
+        problem.setType(URI.create("https://example.com/errors/user-not-own-course"));
+        problem.setInstance(URI.create(request.getDescription(false).replace("uri=", "")));
+        return problem;
+    }
+
     @ExceptionHandler(StudentAlreadyEnrolledException.class)
     public ProblemDetail handleStudentAlreadyEnrolled(StudentAlreadyEnrolledException ex, WebRequest request) {
         log.warn(ex.getMessage(), ex);
