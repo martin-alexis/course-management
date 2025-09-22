@@ -4,8 +4,18 @@ import com.github.martinalexis.course_management.course.dto.v1.CreateCourseReque
 import com.github.martinalexis.course_management.course.dto.v1.CreateCourseResponseDtoV1;
 import com.github.martinalexis.course_management.course.dto.v1.EnrollCourseResponseDtoV1;
 import com.github.martinalexis.course_management.course.model.CourseModel;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
+
+import java.util.List;
 
 public interface CourseUseCase {
     EnrollCourseResponseDtoV1 enrollStudentToCourse(int idCourse);
+
     CreateCourseResponseDtoV1 createCourse(CreateCourseRequestDtoV1 request);
+
+    Page<CreateCourseResponseDtoV1> getAllCourses(Pageable pageable);
+
+    CreateCourseResponseDtoV1 getById(int idCourse);
 }

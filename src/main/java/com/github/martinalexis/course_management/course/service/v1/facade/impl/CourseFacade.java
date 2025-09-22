@@ -6,6 +6,7 @@ import com.github.martinalexis.course_management.course.dto.v1.CreateCourseRespo
 import com.github.martinalexis.course_management.course.dto.v1.EnrollCourseResponseDtoV1;
 import com.github.martinalexis.course_management.course.mapper.v1.CourseMapperV1;
 import com.github.martinalexis.course_management.course.model.CourseModel;
+import com.github.martinalexis.course_management.course.model.RoleEnum;
 import com.github.martinalexis.course_management.course.model.UserHasCoursesModel;
 import com.github.martinalexis.course_management.course.service.v1.CourseServiceV1;
 import com.github.martinalexis.course_management.course.service.v1.UserHasCoursesService;
@@ -15,7 +16,13 @@ import com.github.martinalexis.course_management.course.service.v1.rules.Teacher
 import com.github.martinalexis.course_management.user.model.UserModel;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -27,6 +34,13 @@ public class CourseFacade implements CourseUseCase {
     private final TeacherCannotEnrollInOwnCourseRule teacherCannotEnrollInOwnCourseRule;
     private final CourseMapperV1 courseMapper;
 
+    @Override
+    public CreateCourseResponseDtoV1 getById(int idCourse) {
+        CourseModel course = courseService.findByIdOrThrow(idCourse);
+        CreateCourseResponseDtoV1 response = courseMapper.toResponse(course);
+        response.setTeacherName(courseService.getTeacherName(course));
+        return response;
+    }
     @Transactional
     @Override
     public CreateCourseResponseDtoV1 createCourse(CreateCourseRequestDtoV1 request) {
@@ -42,6 +56,17 @@ public class CourseFacade implements CourseUseCase {
         response.setTeacherName(currentUser.getName() + " " + currentUser.getLastname());
 
         return response;
+    }
+
+    @Override
+    public Page<CreateCourseResponseDtoV1> getAllCourses(Pageable pageable) {
+        return courseService
+                .findAll(pageable)
+                .map(course -> {
+                    CreateCourseResponseDtoV1 response = courseMapper.toResponse(course);
+                    response.setTeacherName(courseService.getTeacherName(course));
+                    return response;
+                });
     }
 
     @Transactional

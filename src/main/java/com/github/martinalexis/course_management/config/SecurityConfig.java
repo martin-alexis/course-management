@@ -6,6 +6,7 @@ import com.github.martinalexis.course_management.auth.handler.v1.OAuth2Authentic
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -70,6 +71,9 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authz -> authz
                         // Local authentication endpoints - completely public
                         .requestMatchers("/api/v1/auth/**", "api/docs").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/courses").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/courses/{idCourse}").permitAll()
+
                         .requestMatchers(
                                 "/v3/api-docs/**",
                                 "/swagger-ui/**",

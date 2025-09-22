@@ -6,9 +6,14 @@ import com.github.martinalexis.course_management.course.dto.v1.EnrollCourseRespo
 import com.github.martinalexis.course_management.course.service.v1.facade.CourseUseCase;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 
 @RestController
 @RequiredArgsConstructor
@@ -24,5 +29,27 @@ public class CourseControllerV1 {
     @PostMapping("/{idCourse}/enroll")
     public ResponseEntity<EnrollCourseResponseDtoV1> enrollingStudentToCourse(@PathVariable int idCourse) {
         return ResponseEntity.status(HttpStatus.OK).body(courseUseCase.enrollStudentToCourse(idCourse));
+    }
+
+    @GetMapping("/{idCourse}")
+    public ResponseEntity<CreateCourseResponseDtoV1> getById(@PathVariable int idCourse) {
+        return ResponseEntity.status(HttpStatus.OK).body(courseUseCase.getById(idCourse));
+    }
+
+    @GetMapping
+    public ResponseEntity<Page<CreateCourseResponseDtoV1>> getAllCourses(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "idCourses") String sortBy,
+            @RequestParam(defaultValue = "asc") String direction
+    ) {
+        Pageable pageable = PageRequest.of(
+                page,
+                size,
+                direction.equalsIgnoreCase("asc") ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending()
+        );
+
+        Page<CreateCourseResponseDtoV1> coursesPage = courseUseCase.getAllCourses(pageable);
+        return ResponseEntity.status(HttpStatus.OK).body(coursesPage);
     }
 }
