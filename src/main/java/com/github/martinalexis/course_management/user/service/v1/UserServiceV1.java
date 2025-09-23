@@ -18,10 +18,9 @@ public class UserServiceV1 {
     private final PasswordEncoder passwordEncoder;
     private final UserMapperV1 userMapperV1;
 
-    public UserResponseDtoV1 getUserById(int idUser) {
-        UserModel user = userRepository.findById(idUser)
+    public UserModel getUserById(int idUser) {
+        return userRepository.findById(idUser)
                 .orElseThrow(() -> new UsernameNotFoundException("user not found"));
-        return userMapperV1.toDto(user);
     }
 
     public UserModel registerNewUser(UserModel newUser) {
