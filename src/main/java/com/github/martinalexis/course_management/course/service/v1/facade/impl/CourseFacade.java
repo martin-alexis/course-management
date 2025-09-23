@@ -6,7 +6,6 @@ import com.github.martinalexis.course_management.course.dto.v1.CreateCourseRespo
 import com.github.martinalexis.course_management.course.dto.v1.EnrollCourseResponseDtoV1;
 import com.github.martinalexis.course_management.course.mapper.v1.CourseMapperV1;
 import com.github.martinalexis.course_management.course.model.CourseModel;
-import com.github.martinalexis.course_management.course.model.RoleEnum;
 import com.github.martinalexis.course_management.course.model.UserHasCoursesModel;
 import com.github.martinalexis.course_management.course.service.v1.CourseServiceV1;
 import com.github.martinalexis.course_management.course.service.v1.UserHasCoursesService;
@@ -19,11 +18,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -90,15 +85,33 @@ public class CourseFacade implements CourseUseCase {
         return response;
     }
 
+
+    //    public Page<CreateCourseResponseDtoV1> getAllCourses(Pageable pageable) {
+//        return courseService
+//                .findAll(pageable)
+//                .map(course -> {
+//                    CreateCourseResponseDtoV1 response = courseMapper.toResponse(course);
+//                    response.setTeacherName(courseService.getTeacherName(course));
+//                    return response;
+//                });
+//    }
     @Override
-    public Page<CreateCourseResponseDtoV1> getAllCourses(Pageable pageable) {
-        return courseService
-                .findAll(pageable)
-                .map(course -> {
-                    CreateCourseResponseDtoV1 response = courseMapper.toResponse(course);
-                    response.setTeacherName(courseService.getTeacherName(course));
-                    return response;
-                });
+    public Page<CreateCourseResponseDtoV1> getAllCourses(String search, Pageable pageable) {
+        Page<CourseModel> courses;
+
+        if (search == null || search.isBlank()) {
+            courses = courseService.findAll(pageable);
+        } else {
+            courses = courseService.findByTitleContainingIgnoreCaseOrDescriptionContainingIgnoreCase(
+                    search, search, pageable
+            );
+        }
+
+        return courses.map(course -> {
+            CreateCourseResponseDtoV1 response = courseMapper.toResponse(course);
+            response.setTeacherName(courseService.getTeacherName(course));
+            return response;
+        });
     }
 
     @Transactional

@@ -51,6 +51,10 @@ public class CourseServiceV1 {
 
     }
 
+    public Page<CourseModel> findByTitleContainingIgnoreCaseOrDescriptionContainingIgnoreCase(String title, String description, Pageable pageable) {
+        return courseRepository.findByTitleContainingIgnoreCaseOrDescriptionContainingIgnoreCase(title, description, pageable);
+    }
+
 
     public String getTeacherName(CourseModel course) {
         return course.getUserCourses().stream()

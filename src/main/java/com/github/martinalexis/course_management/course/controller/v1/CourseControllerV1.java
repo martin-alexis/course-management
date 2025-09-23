@@ -51,7 +51,8 @@ public class CourseControllerV1 {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "idCourses") String sortBy,
-            @RequestParam(defaultValue = "asc") String direction
+            @RequestParam(defaultValue = "asc") String direction,
+            @RequestParam(required = false) String search
     ) {
         Pageable pageable = PageRequest.of(
                 page,
@@ -59,7 +60,8 @@ public class CourseControllerV1 {
                 direction.equalsIgnoreCase("asc") ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending()
         );
 
-        Page<CreateCourseResponseDtoV1> coursesPage = courseUseCase.getAllCourses(pageable);
-        return ResponseEntity.status(HttpStatus.OK).body(coursesPage);
+        Page<CreateCourseResponseDtoV1> coursesPage = courseUseCase.getAllCourses(search, pageable);
+        return ResponseEntity.ok(coursesPage);
     }
+
 }

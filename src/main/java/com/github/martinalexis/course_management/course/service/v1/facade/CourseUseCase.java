@@ -15,7 +15,7 @@ public interface CourseUseCase {
 
     CreateCourseResponseDtoV1 createCourse(CreateCourseRequestDtoV1 request);
 
-    Page<CreateCourseResponseDtoV1> getAllCourses(Pageable pageable);
+    Page<CreateCourseResponseDtoV1> getAllCourses(String search, Pageable pageable);
 
     CreateCourseResponseDtoV1 getById(int idCourse);
 
