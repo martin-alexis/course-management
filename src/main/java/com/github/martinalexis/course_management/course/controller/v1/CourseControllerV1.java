@@ -4,6 +4,7 @@ import com.github.martinalexis.course_management.course.dto.v1.CreateCourseReque
 import com.github.martinalexis.course_management.course.dto.v1.CreateCourseResponseDtoV1;
 import com.github.martinalexis.course_management.course.dto.v1.EnrollCourseResponseDtoV1;
 import com.github.martinalexis.course_management.course.service.v1.facade.CourseUseCase;
+import com.github.martinalexis.course_management.user.model.UserModel;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -37,7 +38,7 @@ public class CourseControllerV1 {
     }
 
     @PatchMapping("/{idCourse}")
-    public ResponseEntity<CreateCourseResponseDtoV1> updateCourse (@PathVariable int idCourse, @Valid @RequestBody CreateCourseRequestDtoV1 request) {
+    public ResponseEntity<CreateCourseResponseDtoV1> updateCourse(@PathVariable int idCourse, @Valid @RequestBody CreateCourseRequestDtoV1 request) {
         return ResponseEntity.status(HttpStatus.OK).body(courseUseCase.updateCourse(idCourse, request));
     }
 
@@ -61,7 +62,46 @@ public class CourseControllerV1 {
         );
 
         Page<CreateCourseResponseDtoV1> coursesPage = courseUseCase.getAllCourses(search, pageable);
-        return ResponseEntity.ok(coursesPage);
+        return ResponseEntity.status(HttpStatus.OK).body(coursesPage);
     }
+
+    @GetMapping("/teacher")
+    public ResponseEntity<Page<CreateCourseResponseDtoV1>> getTeacherCourses(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "id") String sortBy,
+            @RequestParam(defaultValue = "asc") String direction,
+            @RequestParam(required = false) String search) {
+
+        Pageable pageable = PageRequest.of(
+                page,
+                size,
+                direction.equalsIgnoreCase("asc") ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending()
+        );
+        Page<CreateCourseResponseDtoV1> courses = courseUseCase.getTeacherCourses(search, pageable);
+
+        return ResponseEntity.status(HttpStatus.OK).body(courses);
+    }
+
+    @GetMapping("/student")
+    public ResponseEntity<Page<CreateCourseResponseDtoV1>> getStudentCourses(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "id") String sortBy,
+            @RequestParam(defaultValue = "asc") String direction,
+            @RequestParam(required = false) String search) {
+
+        Pageable pageable = PageRequest.of(
+                page,
+                size,
+                direction.equalsIgnoreCase("asc") ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending()
+        );
+        Page<CreateCourseResponseDtoV1> courses = courseUseCase.getStudentCourses(search, pageable);
+
+        return ResponseEntity.status(HttpStatus.OK).body(courses);
+    }
+
+
+
 
 }

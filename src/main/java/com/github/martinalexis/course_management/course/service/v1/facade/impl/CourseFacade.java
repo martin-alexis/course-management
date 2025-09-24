@@ -86,15 +86,6 @@ public class CourseFacade implements CourseUseCase {
     }
 
 
-    //    public Page<CreateCourseResponseDtoV1> getAllCourses(Pageable pageable) {
-//        return courseService
-//                .findAll(pageable)
-//                .map(course -> {
-//                    CreateCourseResponseDtoV1 response = courseMapper.toResponse(course);
-//                    response.setTeacherName(courseService.getTeacherName(course));
-//                    return response;
-//                });
-//    }
     @Override
     public Page<CreateCourseResponseDtoV1> getAllCourses(String search, Pageable pageable) {
         Page<CourseModel> courses;
@@ -106,6 +97,35 @@ public class CourseFacade implements CourseUseCase {
                     search, search, pageable
             );
         }
+
+        return courses.map(course -> {
+            CreateCourseResponseDtoV1 response = courseMapper.toResponse(course);
+            response.setTeacherName(courseService.getTeacherName(course));
+            return response;
+        });
+    }
+
+    @Override
+    public Page<CreateCourseResponseDtoV1> getTeacherCourses(String search, Pageable pageable) {
+
+        UserModel currentUser = authService.getCurrentUser();
+
+        Page<CourseModel> courses = courseService.findTeacherCoursesWithSearch(currentUser.getIdUser(), search, pageable);
+
+
+        return courses.map(course -> {
+            CreateCourseResponseDtoV1 response = courseMapper.toResponse(course);
+            response.setTeacherName(courseService.getTeacherName(course));
+            return response;
+        });
+    }
+
+    public Page<CreateCourseResponseDtoV1> getStudentCourses(String search, Pageable pageable) {
+
+        UserModel currentUser = authService.getCurrentUser();
+
+        Page<CourseModel> courses = courseService.findStudentCoursesWithSearch(currentUser.getIdUser(), search, pageable);
+
 
         return courses.map(course -> {
             CreateCourseResponseDtoV1 response = courseMapper.toResponse(course);

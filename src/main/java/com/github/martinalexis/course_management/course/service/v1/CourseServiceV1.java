@@ -55,6 +55,13 @@ public class CourseServiceV1 {
         return courseRepository.findByTitleContainingIgnoreCaseOrDescriptionContainingIgnoreCase(title, description, pageable);
     }
 
+    public Page<CourseModel> findTeacherCoursesWithSearch(int idUser, String search, Pageable pageable) {
+        return courseRepository.findCoursesWithRoleAndSearch(idUser, RoleEnum.TEACHER, search, pageable);
+    }
+
+    public Page<CourseModel> findStudentCoursesWithSearch(int idUser, String search, Pageable pageable) {
+        return courseRepository.findCoursesWithRoleAndSearch(idUser, RoleEnum.STUDENT, search, pageable);
+    }
 
     public String getTeacherName(CourseModel course) {
         return course.getUserCourses().stream()

@@ -8,6 +8,8 @@ import com.github.martinalexis.course_management.user.model.UserModel;
 import com.github.martinalexis.course_management.user.service.v1.UserServiceV1;
 import com.github.martinalexis.course_management.user.service.v1.facade.UserUseCase;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @RequiredArgsConstructor
@@ -21,5 +23,10 @@ public class UserFacade implements UserUseCase {
         UserModel user = userService.getUserById(idUser);
         UserResponseDtoV1 response = userMapper.toDto(user);
         return response;
+    }
+
+    @Override
+    public Page<CreateCourseResponseDtoV1> getCoursesOfUser(int idUser, String search, Pageable pageable) {
+        return null;
     }
 }
