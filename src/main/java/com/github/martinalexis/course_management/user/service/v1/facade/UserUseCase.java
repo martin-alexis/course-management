@@ -9,6 +9,4 @@ public interface UserUseCase {
 
     UserResponseDtoV1 getById (int idUser);
 
-    Page<CreateCourseResponseDtoV1> getCoursesOfUser(int idUser, String search, Pageable pageable);
-
 }
