@@ -1,10 +1,20 @@
 package com.github.martinalexis.course_management.course.controller.v1;
 
+import com.github.martinalexis.course_management.common.exceptions.GlobalExceptionJsonExamples;
+import com.github.martinalexis.course_management.auth.exceptions.v1.AuthExceptionJsonExamples;
 import com.github.martinalexis.course_management.course.dto.v1.CreateCourseRequestDtoV1;
 import com.github.martinalexis.course_management.course.dto.v1.CreateCourseResponseDtoV1;
 import com.github.martinalexis.course_management.course.dto.v1.EnrollCourseResponseDtoV1;
+import com.github.martinalexis.course_management.course.exception.v1.CoursesExceptionJsonExamples;
 import com.github.martinalexis.course_management.course.service.v1.facade.CourseUseCase;
 import com.github.martinalexis.course_management.user.model.UserModel;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -12,6 +22,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,35 +30,95 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/courses")
+@Tag(name = "Courses", description = "Endpoints for managing courses and enrollments")
 public class CourseControllerV1 {
     private final CourseUseCase courseUseCase;
 
     @PostMapping
+    @Operation(summary = "Create a new course", description = "Creates a new course. The authenticated user will be the teacher.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "201", description = "Course created successfully", content = @Content(mediaType = "application/json", schema = @Schema(implementation = CreateCourseResponseDtoV1.class))),
+            @ApiResponse(responseCode = "400", description = "Invalid input data", content = @Content(mediaType = "application/problem+json", schema = @Schema(implementation = ProblemDetail.class), examples = @ExampleObject(name = "Validation Error", value = GlobalExceptionJsonExamples.VALIDATION_FAILED_RESPONSE))),
+            @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content(mediaType = "application/problem+json", schema = @Schema(implementation = ProblemDetail.class), examples = @ExampleObject(name = "Unauthorized", value = AuthExceptionJsonExamples.UNAUTHORIZED_RESPONSE))),
+            @ApiResponse(
+                    responseCode = "409", description = "A unique constraint was violated.",
+                    content = @Content(mediaType = "application/problem+json", schema = @Schema(implementation = ProblemDetail.class),
+                            examples = @ExampleObject(name = "Unique Constraint Violation", value = GlobalExceptionJsonExamples.UNIQUE_CONSTRAINT_VIOLATION_RESPONSE))
+            ),
+            @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content(mediaType = "application/problem+json", schema = @Schema(implementation = ProblemDetail.class), examples = @ExampleObject(name = "Internal Error", value = GlobalExceptionJsonExamples.UNEXPECTED_ERROR_RESPONSE)))
+    })
     public ResponseEntity<CreateCourseResponseDtoV1> createCourse(@Valid @RequestBody CreateCourseRequestDtoV1 request) {
         return ResponseEntity.status(HttpStatus.CREATED).body(courseUseCase.createCourse(request));
     }
 
     @PostMapping("/{idCourse}/enroll")
+    @Operation(summary = "Enroll current student in a course", description = "Enrolls the authenticated student into the specified course.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Enrolled successfully", content = @Content(mediaType = "application/json", schema = @Schema(implementation = EnrollCourseResponseDtoV1.class))),
+            @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content(mediaType = "application/problem+json", schema = @Schema(implementation = ProblemDetail.class), examples = @ExampleObject(name = "Unauthorized", value = AuthExceptionJsonExamples.UNAUTHORIZED_RESPONSE))),
+            @ApiResponse(responseCode = "404", description = "Course not found", content = @Content(mediaType = "application/problem+json", schema = @Schema(implementation = ProblemDetail.class), examples = @ExampleObject(name = "Resource Not Found", value = GlobalExceptionJsonExamples.RESOURCE_NOT_FOUND_RESPONSE))),
+            @ApiResponse(responseCode = "409", description = "Conflict during enrollment", content = @Content(mediaType = "application/problem+json", schema = @Schema(implementation = ProblemDetail.class), examples = {
+                    @ExampleObject(name = "Teacher Cannot Enroll", summary = "Teacher tries to enroll in own course", value = CoursesExceptionJsonExamples.TEACHER_CANNOT_ENROLL_RESPONSE),
+                    @ExampleObject(name = "Student Already Enrolled", summary = "Student is already in the course", value = CoursesExceptionJsonExamples.STUDENT_ALREADY_ENROLLED_RESPONSE),
+                    @ExampleObject(name = "Unique Constraint Violation", summary = "Generic unique constraint violation", value = GlobalExceptionJsonExamples.UNIQUE_CONSTRAINT_VIOLATION_RESPONSE)
+            })),
+            @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content(mediaType = "application/problem+json", schema = @Schema(implementation = ProblemDetail.class), examples = @ExampleObject(name = "Internal Error", value = GlobalExceptionJsonExamples.UNEXPECTED_ERROR_RESPONSE)))
+    })
     public ResponseEntity<EnrollCourseResponseDtoV1> enrollingStudentToCourse(@PathVariable int idCourse) {
         return ResponseEntity.status(HttpStatus.OK).body(courseUseCase.enrollStudentToCourse(idCourse));
     }
 
     @GetMapping("/{idCourse}")
+    @Operation(summary = "Get a course by ID", description = "Retrieves the details of a specific course.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Course found", content = @Content(mediaType = "application/json", schema = @Schema(implementation = CreateCourseResponseDtoV1.class))),
+            @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content(mediaType = "application/problem+json", schema = @Schema(implementation = ProblemDetail.class), examples = @ExampleObject(name = "Unauthorized", value = AuthExceptionJsonExamples.UNAUTHORIZED_RESPONSE))),
+            @ApiResponse(responseCode = "404", description = "Course not found", content = @Content(mediaType = "application/problem+json", schema = @Schema(implementation = ProblemDetail.class), examples = @ExampleObject(name = "Resource Not Found", value = GlobalExceptionJsonExamples.RESOURCE_NOT_FOUND_RESPONSE))),
+            @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content(mediaType = "application/problem+json", schema = @Schema(implementation = ProblemDetail.class), examples = @ExampleObject(name = "Internal Error", value = GlobalExceptionJsonExamples.UNEXPECTED_ERROR_RESPONSE)))
+    })
     public ResponseEntity<CreateCourseResponseDtoV1> getById(@PathVariable int idCourse) {
         return ResponseEntity.status(HttpStatus.OK).body(courseUseCase.getById(idCourse));
     }
 
     @PatchMapping("/{idCourse}")
+    @Operation(summary = "Update a course", description = "Updates the details of a course. Only the teacher who owns the course can perform this action.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Course updated successfully", content = @Content(mediaType = "application/json", schema = @Schema(implementation = CreateCourseResponseDtoV1.class))),
+            @ApiResponse(responseCode = "400", description = "Invalid input data", content = @Content(mediaType = "application/problem+json", schema = @Schema(implementation = ProblemDetail.class), examples = @ExampleObject(name = "Validation Error", value = GlobalExceptionJsonExamples.VALIDATION_FAILED_RESPONSE))),
+            @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content(mediaType = "application/problem+json", schema = @Schema(implementation = ProblemDetail.class), examples = @ExampleObject(name = "Unauthorized", value = AuthExceptionJsonExamples.UNAUTHORIZED_RESPONSE))),
+            @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content(mediaType = "application/problem+json", schema = @Schema(implementation = ProblemDetail.class), examples = @ExampleObject(name = "User Not Owner", value = CoursesExceptionJsonExamples.USER_NOT_OWN_COURSE_RESPONSE))),
+            @ApiResponse(responseCode = "404", description = "Course not found", content = @Content(mediaType = "application/problem+json", schema = @Schema(implementation = ProblemDetail.class), examples = @ExampleObject(name = "Resource Not Found", value = GlobalExceptionJsonExamples.RESOURCE_NOT_FOUND_RESPONSE))),
+            @ApiResponse(
+                    responseCode = "409", description = "A unique constraint was violated (e.g., course name already exists).",
+                    content = @Content(mediaType = "application/problem+json", schema = @Schema(implementation = ProblemDetail.class),
+                            examples = @ExampleObject(name = "Unique Constraint Violation", value = GlobalExceptionJsonExamples.UNIQUE_CONSTRAINT_VIOLATION_RESPONSE))
+            ),
+            @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content(mediaType = "application/problem+json", schema = @Schema(implementation = ProblemDetail.class), examples = @ExampleObject(name = "Internal Error", value = GlobalExceptionJsonExamples.UNEXPECTED_ERROR_RESPONSE)))
+    })
     public ResponseEntity<CreateCourseResponseDtoV1> updateCourse(@PathVariable int idCourse, @Valid @RequestBody CreateCourseRequestDtoV1 request) {
         return ResponseEntity.status(HttpStatus.OK).body(courseUseCase.updateCourse(idCourse, request));
     }
 
     @DeleteMapping("/{idCourse}")
+    @Operation(summary = "Delete a course", description = "Deletes a course. Only the teacher who owns the course can perform this action.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "204", description = "Course deleted successfully", content = @Content(mediaType = "application/json", schema = @Schema(implementation = CreateCourseResponseDtoV1.class))),
+            @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content(mediaType = "application/problem+json", schema = @Schema(implementation = ProblemDetail.class), examples = @ExampleObject(name = "Unauthorized", value = AuthExceptionJsonExamples.UNAUTHORIZED_RESPONSE))),
+            @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content(mediaType = "application/problem+json", schema = @Schema(implementation = ProblemDetail.class), examples = @ExampleObject(name = "User Not Owner", value = CoursesExceptionJsonExamples.USER_NOT_OWN_COURSE_RESPONSE))),
+            @ApiResponse(responseCode = "404", description = "Course not found", content = @Content(mediaType = "application/problem+json", schema = @Schema(implementation = ProblemDetail.class), examples = @ExampleObject(name = "Resource Not Found", value = GlobalExceptionJsonExamples.RESOURCE_NOT_FOUND_RESPONSE))),
+            @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content(mediaType = "application/problem+json", schema = @Schema(implementation = ProblemDetail.class), examples = @ExampleObject(name = "Internal Error", value = GlobalExceptionJsonExamples.UNEXPECTED_ERROR_RESPONSE)))
+    })
     public ResponseEntity<CreateCourseResponseDtoV1> deleteCourse(@PathVariable int idCourse) {
         return ResponseEntity.status(HttpStatus.OK).body(courseUseCase.deleteCourse(idCourse));
     }
 
     @GetMapping
+    @Operation(summary = "Get all available courses", description = "Retrieves a paginated list of all courses. Can be filtered by a search term.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Courses retrieved successfully"),
+            @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content(mediaType = "application/problem+json", schema = @Schema(implementation = ProblemDetail.class), examples = @ExampleObject(name = "Unauthorized", value = AuthExceptionJsonExamples.UNAUTHORIZED_RESPONSE))),
+            @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content(mediaType = "application/problem+json", schema = @Schema(implementation = ProblemDetail.class), examples = @ExampleObject(name = "Internal Error", value = GlobalExceptionJsonExamples.UNEXPECTED_ERROR_RESPONSE)))
+    })
     public ResponseEntity<Page<CreateCourseResponseDtoV1>> getAllCourses(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
@@ -66,6 +137,12 @@ public class CourseControllerV1 {
     }
 
     @GetMapping("/teacher")
+    @Operation(summary = "Get courses taught by the current user", description = "Retrieves a paginated list of courses where the authenticated user is the teacher.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Courses retrieved successfully"),
+            @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content(mediaType = "application/problem+json", schema = @Schema(implementation = ProblemDetail.class), examples = @ExampleObject(name = "Unauthorized", value = AuthExceptionJsonExamples.UNAUTHORIZED_RESPONSE))),
+            @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content(mediaType = "application/problem+json", schema = @Schema(implementation = ProblemDetail.class), examples = @ExampleObject(name = "Internal Error", value = GlobalExceptionJsonExamples.UNEXPECTED_ERROR_RESPONSE)))
+    })
     public ResponseEntity<Page<CreateCourseResponseDtoV1>> getTeacherCourses(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
@@ -84,6 +161,12 @@ public class CourseControllerV1 {
     }
 
     @GetMapping("/student")
+    @Operation(summary = "Get courses the current user is enrolled in", description = "Retrieves a paginated list of courses where the authenticated user is enrolled as a student.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Courses retrieved successfully"),
+            @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content(mediaType = "application/problem+json", schema = @Schema(implementation = ProblemDetail.class), examples = @ExampleObject(name = "Unauthorized", value = AuthExceptionJsonExamples.UNAUTHORIZED_RESPONSE))),
+            @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content(mediaType = "application/problem+json", schema = @Schema(implementation = ProblemDetail.class), examples = @ExampleObject(name = "Internal Error", value = GlobalExceptionJsonExamples.UNEXPECTED_ERROR_RESPONSE)))
+    })
     public ResponseEntity<Page<CreateCourseResponseDtoV1>> getStudentCourses(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
@@ -100,8 +183,6 @@ public class CourseControllerV1 {
 
         return ResponseEntity.status(HttpStatus.OK).body(courses);
     }
-
-
 
 
 }
