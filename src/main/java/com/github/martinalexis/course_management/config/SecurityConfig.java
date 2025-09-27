@@ -70,7 +70,7 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authz -> authz
                         // Local authentication endpoints - completely public
-                        .requestMatchers("/api/v1/auth/**", "api/docs").permitAll()
+                        .requestMatchers("/api/v1/auth/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/v1/courses").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/v1/courses/{idCourse}").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/v1/users/{id}").permitAll()
