@@ -16,6 +16,16 @@ public class AuthExceptionJsonExamples {
                 }
             """;
 
+    public static final String UNAUTHORIZED_RESPONSE = """
+                {
+                  "type": "https://example.com/errors/unauthorized",
+                  "title": "Unauthorized",
+                  "status": 401,
+                  "detail": "You must provide a valid Bearer token to access this resource",
+                  "instance": "/api/v1/resource/endpoint"
+                }
+            """;
+
     /**
      * Example response for a custom invalid credentials check.
      * While similar to BAD_CREDENTIALS_RESPONSE, this might be triggered
