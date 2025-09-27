@@ -2,25 +2,27 @@ package com.github.martinalexis.course_management.course.model;
 import com.github.martinalexis.course_management.lesson.model.LessonModel;
 import com.github.martinalexis.course_management.review.model.ReviewModel;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
-@Data
+@Getter
+@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Table(name = "courses")
 public class CourseModel {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_courses")
+    @EqualsAndHashCode.Include
     private Integer idCourses;
 
     @Column(name = "title", nullable = false, length = 45, unique = true)
@@ -32,13 +34,13 @@ public class CourseModel {
     @Column(name = "created_on", nullable = false)
     private LocalDateTime createdOn;
 
-    @OneToMany(mappedBy = "coursesId", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<UserHasCoursesModel> userCourses;
+    @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Set<UserHasCoursesModel> userCourses = new HashSet<>();
 
-    @OneToMany(mappedBy = "coursesId", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<LessonModel> lessons;
+    @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Set<LessonModel> lessons = new HashSet<>();
 
-    @OneToMany(mappedBy = "coursesId", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<ReviewModel> reviews;
+    @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Set<ReviewModel> reviews = new HashSet<>();
 }
 

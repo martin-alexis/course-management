@@ -3,15 +3,14 @@ package com.github.martinalexis.course_management.course.model;
 
 import com.github.martinalexis.course_management.user.model.UserModel;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
 @Entity
-@Data
+@Getter
+@Setter
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -21,19 +20,20 @@ public class UserHasCoursesModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_users_has_courses")
+    @EqualsAndHashCode.Include
     private Integer idUserHasCourses;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "users_id", nullable = false)
-    private UserModel usersId;
+    private UserModel user;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "courses_id", nullable = false)
-    private CourseModel coursesId;
+    private CourseModel course;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "roles_id", nullable = false)
-    private RoleModel rolesId;
+    private RoleModel role;
 
     @Column(name = "inscription_date", nullable = false)
     private LocalDateTime inscriptionDate;

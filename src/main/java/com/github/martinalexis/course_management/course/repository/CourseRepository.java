@@ -22,8 +22,8 @@ public interface CourseRepository extends JpaRepository<CourseModel, Integer> {
                 SELECT c
                 FROM CourseModel c
                 JOIN c.userCourses uc
-                WHERE uc.usersId.idUser = :userId
-                  AND uc.rolesId.role = :role
+                WHERE uc.user.idUser = :userId
+                  AND uc.role.role = :role
                   AND (:search IS NULL OR :search = '' 
                        OR LOWER(c.title) LIKE LOWER(CONCAT('%', :search, '%')) 
                        OR LOWER(c.description) LIKE LOWER(CONCAT('%', :search, '%')))

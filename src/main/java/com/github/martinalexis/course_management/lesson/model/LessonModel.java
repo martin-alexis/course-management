@@ -2,24 +2,24 @@ package com.github.martinalexis.course_management.lesson.model;
 
 import com.github.martinalexis.course_management.course.model.CourseModel;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
 @Entity
-@Data
+@Getter
+@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "lessons", schema = "course_management")
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class LessonModel {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_lessons")
+    @EqualsAndHashCode.Include
     private Integer idLesson;
 
     @Column(name = "title", nullable = false, length = 45)
@@ -36,5 +36,5 @@ public class LessonModel {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "courses_id", nullable = false)
-    private CourseModel coursesId;
+    private CourseModel course;
 }

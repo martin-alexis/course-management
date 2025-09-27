@@ -3,7 +3,6 @@ package com.github.martinalexis.course_management.course.service.v1.rules;
 import com.github.martinalexis.course_management.course.exception.v1.TeacherCannotEnrollException;
 import com.github.martinalexis.course_management.course.model.CourseModel;
 import com.github.martinalexis.course_management.course.model.RoleEnum;
-import com.github.martinalexis.course_management.course.model.UserHasCoursesModel;
 import com.github.martinalexis.course_management.course.repository.UserHasCoursesRepository;
 import com.github.martinalexis.course_management.user.model.UserModel;
 import lombok.RequiredArgsConstructor;
@@ -16,8 +15,8 @@ public class TeacherCannotEnrollInOwnCourseRule {
 
     public void execute(UserModel user, CourseModel course) {
 
-        userHasCoursesRepository.findByUsersIdAndCoursesId(user, course)
-                .filter(uhc -> uhc.getRolesId().getRole() == RoleEnum.TEACHER)
+        userHasCoursesRepository.findByUserAndCourse(user, course)
+                .filter(uhc -> uhc.getRole().getRole() == RoleEnum.TEACHER)
                 .ifPresent(uhc -> {
                     throw new TeacherCannotEnrollException();
                 });

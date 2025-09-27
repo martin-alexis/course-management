@@ -10,7 +10,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @RequiredArgsConstructor
 @Service
@@ -65,8 +64,8 @@ public class CourseServiceV1 {
 
     public String getTeacherName(CourseModel course) {
         return course.getUserCourses().stream()
-                .filter(uc -> uc.getRolesId().getRole().equals(RoleEnum.TEACHER))
-                .map(uc -> uc.getUsersId().getName() + " " + uc.getUsersId().getLastname())
+                .filter(uc -> uc.getRole().getRole().equals(RoleEnum.TEACHER))
+                .map(uc -> uc.getUser().getName() + " " + uc.getUser().getLastname())
                 .findFirst()
                 .orElse("Unknown");
     }

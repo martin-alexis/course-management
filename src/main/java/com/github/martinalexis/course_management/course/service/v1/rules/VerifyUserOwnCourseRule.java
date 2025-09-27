@@ -11,7 +11,7 @@ public class VerifyUserOwnCourseRule {
 
     public void execute(UserModel user, CourseModel course) {
         boolean isTeacher = course.getUserCourses().stream()
-                .anyMatch(uc -> uc.getUsersId().getIdUser().equals(user.getIdUser()) && uc.getRolesId().getRole().equals(RoleEnum.TEACHER));
+                .anyMatch(uc -> uc.getUser().getIdUser().equals(user.getIdUser()) && uc.getRole().getRole().equals(RoleEnum.TEACHER));
 
         if (!isTeacher) {
             throw new UserNotOwnCourseException();

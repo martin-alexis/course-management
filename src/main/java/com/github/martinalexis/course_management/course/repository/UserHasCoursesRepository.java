@@ -9,5 +9,5 @@ import java.util.Optional;
 
 public interface UserHasCoursesRepository extends JpaRepository<UserHasCoursesModel, Integer> {
 
-    Optional<UserHasCoursesModel> findByUsersIdAndCoursesId(UserModel user, CourseModel idCourse);
+    Optional<UserHasCoursesModel> findByUserAndCourse(UserModel user, CourseModel course);
 }

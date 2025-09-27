@@ -4,16 +4,15 @@ package com.github.martinalexis.course_management.review.model;
 import com.github.martinalexis.course_management.course.model.CourseModel;
 import com.github.martinalexis.course_management.user.model.UserModel;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
-@Data
+@Getter
+@Setter
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -23,6 +22,7 @@ public class ReviewModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_reviews")
+    @EqualsAndHashCode.Include
     private Integer idReview;
 
     @Column(name = "comment", columnDefinition = "TEXT")
@@ -36,9 +36,9 @@ public class ReviewModel {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "courses_id", nullable = false)
-    private CourseModel coursesId;
+    private CourseModel course;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "users_id", nullable = false)
-    private UserModel usersId;
+    private UserModel user;
 }
