@@ -25,8 +25,4 @@ public class UserFacade implements UserUseCase {
         return response;
     }
 
-    @Override
-    public Page<CreateCourseResponseDtoV1> getCoursesOfUser(int idUser, String search, Pageable pageable) {
-        return null;
-    }
 }
