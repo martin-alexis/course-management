@@ -8,4 +8,6 @@ import org.mapstruct.Mapper;
 public interface LessonMapper {
     // Request -> Entity
     LessonModel lessonRequestTtoEntity(LessonRequestDto dto);
+    // Entity -> Response
+    LessonRequestDto lessonEntityToResponse(LessonModel entity);
 }
