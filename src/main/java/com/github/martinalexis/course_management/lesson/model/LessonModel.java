@@ -22,7 +22,7 @@ public class LessonModel {
     @EqualsAndHashCode.Include
     private Integer idLesson;
 
-    @Column(name = "title", nullable = false, length = 45)
+    @Column(name = "title", nullable = false, unique = true, length = 45)
     private String title;
 
     @Column(name = "description", nullable = false, length = 255)
