@@ -1,5 +1,6 @@
 package com.github.martinalexis.course_management.lesson.service.v1;
 
+import com.github.martinalexis.course_management.common.exceptions.ResourceNotFoundException;
 import com.github.martinalexis.course_management.course.model.CourseModel;
 import com.github.martinalexis.course_management.course.model.RoleEnum;
 import com.github.martinalexis.course_management.lesson.model.LessonModel;
@@ -25,6 +26,11 @@ public class LessonService {
 
     public Page<LessonModel> getLessonsByCourse(CourseModel course, String search, Pageable pageable) {
         return lessonRepository.findLessonsByCourseAndFilters(course, search, pageable);
+    }
+
+    public LessonModel findByIdOrThrow(int idLesson) {
+        return lessonRepository.findById(idLesson)
+                .orElseThrow(() -> new ResourceNotFoundException("lesson", idLesson));
     }
 
 }

@@ -57,7 +57,9 @@ public class LessonFacade implements LessonUseCase {
 
     @Override
     public LessonResponseDto getById(int idLesson) {
-        return null;
+        authService.getCurrentUser();
+        LessonModel lesson = lessonService.findByIdOrThrow(idLesson);
+        return lessonMapper.lessonEntityToResponse(lesson);
     }
 
     @Override
