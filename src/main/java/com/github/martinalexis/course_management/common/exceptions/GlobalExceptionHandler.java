@@ -26,25 +26,39 @@ public class GlobalExceptionHandler {
 
 
     @ExceptionHandler(DataIntegrityViolationException.class)
-    public ProblemDetail handleUniqueConstraintViolation(DataIntegrityViolationException ex, WebRequest request) {
-        log.error("Unique constraint violation", ex);
-        String detailMessage = "A unique constraint was violated.";
+    public ProblemDetail handleDataIntegrityViolation(DataIntegrityViolationException ex, WebRequest request) {
+        log.error("Data integrity violation", ex);
+
+        String detailMessage = "A database constraint was violated.";
 
         Throwable cause = ex.getCause();
         if (cause instanceof ConstraintViolationException constraintEx) {
             String dbConstraintName = constraintEx.getConstraintName();
-            if (dbConstraintName != null) {
-                detailMessage = String.format("The value for '%s' already exists and must be unique.", dbConstraintName);
+
+            String sqlState = constraintEx.getSQLException().getSQLState();
+
+            if ("23505".equals(sqlState)) {
+                detailMessage = String.format("The value for '%s' already exists and must be unique.",
+                        dbConstraintName != null ? dbConstraintName : "field");
+            } else if ("23502".equals(sqlState)) {
+                detailMessage = String.format("A required field cannot be null. %s",
+                        dbConstraintName != null ? "(" + dbConstraintName + ")" : "");
+            } else if ("23503".equals(sqlState)) {
+                detailMessage = "This record is still referenced by another entity (foreign key violation).";
+            } else if (dbConstraintName != null) {
+                detailMessage = String.format("Constraint '%s' was violated.", dbConstraintName);
             }
         }
 
-        ProblemDetail problem = ProblemDetail.forStatus(HttpStatus.CONFLICT); // 409 Conflict
-        problem.setTitle("Unique constraint violation");
-        problem.setDetail(detailMessage);
-        problem.setType(URI.create("https://example.com/errors/unique-constraint"));
+        ProblemDetail problem = ProblemDetail.forStatus(HttpStatus.CONFLICT);
+        problem.setTitle("Data integrity violation");
+        problem.setDetail(detailMessage); // 👈 ahora uso el mensaje calculado
+        problem.setType(URI.create("https://example.com/errors/data-integrity-violation"));
         problem.setInstance(URI.create(request.getDescription(false).replace("uri=", "")));
+
         return problem;
     }
+
 
 
     @ExceptionHandler(ResourceNotFoundException.class)
