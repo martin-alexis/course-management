@@ -25,10 +25,9 @@ public class LessonRequestDto {
     @Schema(description = "Description of the lesson", example = "Learn Java basics and OOP concepts", required = true)
     private String description;
 
+    @NotBlank(message = "url video is mandatory")
     @URL(message = "Video URL must be a valid URL")
     @Schema(description = "URL of the lesson video", example = "https://www.youtube.com/watch?v=someVideoId", required = true)
     private String videoUrl;
 
-    @Schema(description = "Publication date of the lesson", example = "2025-09-10T10:15:30")
-    private LocalDateTime publishedOn;
 }
