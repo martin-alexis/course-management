@@ -88,20 +88,54 @@ public class LessonControllerV1 {
     }
 
     @GetMapping()
-    public ResponseEntity<Page<LessonResponseDto>> getLessonsByCourse(@PathVariable int idCourse,
+    @Operation(
+            summary = "Get all lessons for a course",
+            description = "Retrieves a paginated list of all lessons associated with a specific course. Supports searching and sorting."
+    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Lessons retrieved successfully."
+            ),
+            @ApiResponse(
+                    responseCode = "401",
+                    description = "Unauthorized. A valid JWT Bearer token is required.",
+                    content = @Content(mediaType = "application/problem+json", schema = @Schema(implementation = ProblemDetail.class),
+                            examples = @ExampleObject(name = "Unauthorized", value = AuthExceptionJsonExamples.UNAUTHORIZED_RESPONSE))
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "Course not found with the provided ID.",
+                    content = @Content(mediaType = "application/problem+json", schema = @Schema(implementation = ProblemDetail.class),
+                            examples = @ExampleObject(name = "Resource Not Found", value = GlobalExceptionJsonExamples.RESOURCE_NOT_FOUND_RESPONSE))
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "Internal Server Error.",
+                    content = @Content(mediaType = "application/problem+json", schema = @Schema(implementation = ProblemDetail.class),
+                            examples = @ExampleObject(name = "Internal Error", value = GlobalExceptionJsonExamples.UNEXPECTED_ERROR_RESPONSE))
+            )
+    })
+    public ResponseEntity<Page<LessonResponseDto>> getLessonsByCourse(
+            @PathVariable int idCourse,
+            @io.swagger.v3.oas.annotations.Parameter(description = "Page number (0-indexed)")
             @RequestParam(defaultValue = "0") int page,
+            @io.swagger.v3.oas.annotations.Parameter(description = "Number of items per page")
             @RequestParam(defaultValue = "10") int size,
+            @io.swagger.v3.oas.annotations.Parameter(description = "Field to sort by (e.g., 'title', 'id')")
             @RequestParam(defaultValue = "id") String sortBy,
+            @io.swagger.v3.oas.annotations.Parameter(description = "Sort direction (asc or desc)")
             @RequestParam(defaultValue = "asc") String direction,
+            @io.swagger.v3.oas.annotations.Parameter(description = "Search term to filter lessons by title or content")
             @RequestParam(required = false) String search) {
 
         Pageable pageable = PageRequest.of(
                 page,
                 size,
-                direction.equalsIgnoreCase("asc") ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending()
+                Sort.by(Sort.Direction.fromString(direction), sortBy)
         );
         Page<LessonResponseDto> lessons = lessonUseCase.getLessonsByCourse(idCourse, search, pageable);
 
-        return ResponseEntity.status(HttpStatus.OK).body(lessons);
+        return ResponseEntity.ok(lessons);
     }
 }
