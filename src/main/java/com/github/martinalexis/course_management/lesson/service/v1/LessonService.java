@@ -24,6 +24,11 @@ public class LessonService {
         return  lessonRepository.save(newLesson);
     }
 
+    public LessonModel deleteLesson (LessonModel lesson) {
+        lessonRepository.delete(lesson);
+        return lesson;
+    }
+
     public Page<LessonModel> getLessonsByCourse(CourseModel course, String search, Pageable pageable) {
         return lessonRepository.findLessonsByCourseAndFilters(course, search, pageable);
     }

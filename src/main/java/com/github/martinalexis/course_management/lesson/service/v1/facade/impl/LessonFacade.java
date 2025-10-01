@@ -68,7 +68,17 @@ public class LessonFacade implements LessonUseCase {
     }
 
     @Override
-    public LessonResponseDto deleteLesson(int idLesson) {
-        return null;
+    public LessonResponseDto deleteLesson(int idLesson, int idCourse) {
+        authService.getCurrentUser();
+
+        CourseModel course = courseService.findByIdOrThrow(idCourse);
+
+        LessonModel lesson = lessonService.findByIdOrThrow(idLesson);
+
+        verifyUserOwnCourseRule.execute(authService.getCurrentUser(), course);
+
+        LessonModel deletedLesson = lessonService.deleteLesson(lesson);
+
+        return lessonMapper.lessonEntityToResponse(deletedLesson);
     }
 }

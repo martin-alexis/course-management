@@ -31,13 +31,13 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1")
+@RequestMapping("/api/v1/courses/{idCourse}/lessons")
 @Tag(name = "Lessons", description = "Endpoints for managing course lessons")
 @SecurityRequirement(name = "bearerAuth")
 public class LessonControllerV1 {
     private final LessonUseCase lessonUseCase;
 
-    @PostMapping("/courses/{idCourse}/lessons")
+    @PostMapping()
     @Operation(
             summary = "Create a new lesson for a course",
             description = "Creates a new lesson and associates it with a specific course. Only the teacher who owns the course can perform this action."
@@ -89,7 +89,7 @@ public class LessonControllerV1 {
         return ResponseEntity.status(HttpStatus.CREATED).body(lessonUseCase.createLesson(idCourse, request));
     }
 
-    @GetMapping("/courses/{idCourse}/lessons")
+    @GetMapping()
     @Operation(
             summary = "Get all lessons for a course",
             description = "Retrieves a paginated list of all lessons associated with a specific course. Supports searching and sorting."
@@ -141,7 +141,7 @@ public class LessonControllerV1 {
         return ResponseEntity.ok(lessons);
     }
 
-    @GetMapping("/lessons/{idLesson}")
+    @GetMapping("/{idLesson}")
     @Operation(
             summary = "Get a single lesson by its ID",
             description = "Retrieves the details of a specific lesson by its unique identifier."
@@ -176,4 +176,50 @@ public class LessonControllerV1 {
             @PathVariable int idLesson) {
         return ResponseEntity.ok(lessonUseCase.getById(idLesson));
     }
+
+    @DeleteMapping("/{idLesson}")
+    @Operation(
+            summary = "Delete a lesson",
+            description = "Deletes a lesson from a course. Only the teacher who owns the course can perform this action."
+    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Lesson deleted successfully. The deleted lesson's data is returned.",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = LessonResponseDto.class))
+            ),
+            @ApiResponse(
+                    responseCode = "401",
+                    description = "Unauthorized. A valid JWT Bearer token is required.",
+                    content = @Content(mediaType = "application/problem+json", schema = @Schema(implementation = ProblemDetail.class),
+                            examples = @ExampleObject(name = "Unauthorized", value = AuthExceptionJsonExamples.UNAUTHORIZED_RESPONSE))
+            ),
+            @ApiResponse(
+                    responseCode = "403",
+                    description = "Forbidden. The authenticated user does not own the course.",
+                    content = @Content(mediaType = "application/problem+json", schema = @Schema(implementation = ProblemDetail.class),
+                            examples = @ExampleObject(name = "User Not Owner", value = CoursesExceptionJsonExamples.USER_NOT_OWN_COURSE_RESPONSE))
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "Resource not found. Either the course or the lesson does not exist.",
+                    content = @Content(mediaType = "application/problem+json", schema = @Schema(implementation = ProblemDetail.class),
+                            examples = @ExampleObject(name = "Resource Not Found", value = GlobalExceptionJsonExamples.RESOURCE_NOT_FOUND_RESPONSE))
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "Internal Server Error.",
+                    content = @Content(mediaType = "application/problem+json", schema = @Schema(implementation = ProblemDetail.class),
+                            examples = @ExampleObject(name = "Internal Error", value = GlobalExceptionJsonExamples.UNEXPECTED_ERROR_RESPONSE))
+            )
+    })
+    public ResponseEntity<LessonResponseDto> deleteLesson(
+            @io.swagger.v3.oas.annotations.Parameter(description = "ID of the course the lesson belongs to")
+            @PathVariable int idCourse,
+            @io.swagger.v3.oas.annotations.Parameter(description = "ID of the lesson to delete")
+            @PathVariable int idLesson
+    ) {
+        return ResponseEntity.ok(lessonUseCase.deleteLesson(idLesson, idCourse));
+    }
+
 }
