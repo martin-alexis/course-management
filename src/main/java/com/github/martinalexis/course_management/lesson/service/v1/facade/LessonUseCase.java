@@ -1,4 +1,4 @@
-package com.github.martinalexis.course_management.lesson.service.v1.facade.impl;
+package com.github.martinalexis.course_management.lesson.service.v1.facade;
 
 
 import com.github.martinalexis.course_management.lesson.dto.v1.LessonRequestDto;
@@ -10,7 +10,7 @@ public interface LessonUseCase {
 
     LessonResponseDto createLesson(int idCourse, LessonRequestDto request);
 
-    Page<LessonResponseDto> getLessonsByCourse(String search, Pageable pageable);
+    Page<LessonResponseDto> getLessonsByCourse(int idCourse, String search, Pageable pageable);
 
     LessonResponseDto getById(int idLesson);
 

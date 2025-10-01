@@ -2,10 +2,11 @@ package com.github.martinalexis.course_management.lesson.controller.v1;
 
 import com.github.martinalexis.course_management.auth.exceptions.v1.AuthExceptionJsonExamples;
 import com.github.martinalexis.course_management.common.exceptions.GlobalExceptionJsonExamples;
+import com.github.martinalexis.course_management.course.dto.v1.CreateCourseResponseDtoV1;
 import com.github.martinalexis.course_management.course.exception.v1.CoursesExceptionJsonExamples;
 import com.github.martinalexis.course_management.lesson.dto.v1.LessonRequestDto;
 import com.github.martinalexis.course_management.lesson.dto.v1.LessonResponseDto;
-import com.github.martinalexis.course_management.lesson.service.v1.facade.impl.LessonUseCase;
+import com.github.martinalexis.course_management.lesson.service.v1.facade.LessonUseCase;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
@@ -16,6 +17,10 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
@@ -24,13 +29,13 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/lessons")
+@RequestMapping("/api/v1/courses/{idCourse}/lessons")
 @Tag(name = "Lessons", description = "Endpoints for managing course lessons")
 @SecurityRequirement(name = "bearerAuth")
 public class LessonControllerV1 {
     private final LessonUseCase lessonUseCase;
 
-    @PostMapping("/{idCourse}")
+    @PostMapping()
     @Operation(
             summary = "Create a new lesson for a course",
             description = "Creates a new lesson and associates it with a specific course. Only the teacher who owns the course can perform this action."
@@ -80,5 +85,23 @@ public class LessonControllerV1 {
     })
     public ResponseEntity<LessonResponseDto> createLesson(@PathVariable int idCourse, @Valid @RequestBody LessonRequestDto request) {
         return ResponseEntity.status(HttpStatus.CREATED).body(lessonUseCase.createLesson(idCourse, request));
+    }
+
+    @GetMapping()
+    public ResponseEntity<Page<LessonResponseDto>> getLessonsByCourse(@PathVariable int idCourse,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "id") String sortBy,
+            @RequestParam(defaultValue = "asc") String direction,
+            @RequestParam(required = false) String search) {
+
+        Pageable pageable = PageRequest.of(
+                page,
+                size,
+                direction.equalsIgnoreCase("asc") ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending()
+        );
+        Page<LessonResponseDto> lessons = lessonUseCase.getLessonsByCourse(idCourse, search, pageable);
+
+        return ResponseEntity.status(HttpStatus.OK).body(lessons);
     }
 }
