@@ -8,7 +8,7 @@ import org.springframework.data.domain.Pageable;
 
 public interface LessonUseCase {
 
-    LessonResponseDto createLesson(LessonRequestDto request);
+    LessonResponseDto createLesson(int idCourse, LessonRequestDto request);
 
     Page<LessonResponseDto> getLessonsByCourse(String search, Pageable pageable);
 
