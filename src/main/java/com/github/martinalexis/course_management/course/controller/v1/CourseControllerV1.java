@@ -9,6 +9,7 @@ import com.github.martinalexis.course_management.course.exception.v1.CoursesExce
 import com.github.martinalexis.course_management.course.service.v1.facade.CourseUseCase;
 import com.github.martinalexis.course_management.user.model.UserModel;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -120,11 +121,11 @@ public class CourseControllerV1 {
             @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content(mediaType = "application/problem+json", schema = @Schema(implementation = ProblemDetail.class), examples = @ExampleObject(name = "Internal Error", value = GlobalExceptionJsonExamples.UNEXPECTED_ERROR_RESPONSE)))
     })
     public ResponseEntity<Page<CreateCourseResponseDtoV1>> getAllCourses(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size,
-            @RequestParam(defaultValue = "idCourses") String sortBy,
-            @RequestParam(defaultValue = "asc") String direction,
-            @RequestParam(required = false) String search
+            @Parameter(description = "Page number (0-indexed)") @RequestParam(defaultValue = "0") int page,
+            @Parameter(description = "Number of items per page") @RequestParam(defaultValue = "10") int size,
+            @Parameter(description = "Field to sort by (e.g., 'title', 'idCourses')") @RequestParam(defaultValue = "idCourses") String sortBy,
+            @Parameter(description = "Sort direction (asc or desc)") @RequestParam(defaultValue = "asc") String direction,
+            @Parameter(description = "Search term to filter courses by title or description") @RequestParam(required = false) String search
     ) {
         Pageable pageable = PageRequest.of(
                 page,
@@ -144,11 +145,11 @@ public class CourseControllerV1 {
             @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content(mediaType = "application/problem+json", schema = @Schema(implementation = ProblemDetail.class), examples = @ExampleObject(name = "Internal Error", value = GlobalExceptionJsonExamples.UNEXPECTED_ERROR_RESPONSE)))
     })
     public ResponseEntity<Page<CreateCourseResponseDtoV1>> getTeacherCourses(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size,
-            @RequestParam(defaultValue = "id") String sortBy,
-            @RequestParam(defaultValue = "asc") String direction,
-            @RequestParam(required = false) String search) {
+            @Parameter(description = "Page number (0-indexed)") @RequestParam(defaultValue = "0") int page,
+            @Parameter(description = "Number of items per page") @RequestParam(defaultValue = "10") int size,
+            @Parameter(description = "Field to sort by (e.g., 'title', 'idCourses')") @RequestParam(defaultValue = "idCourses") String sortBy,
+            @Parameter(description = "Sort direction (asc or desc)") @RequestParam(defaultValue = "asc") String direction,
+            @Parameter(description = "Search term to filter courses by title or description") @RequestParam(required = false) String search) {
 
         Pageable pageable = PageRequest.of(
                 page,
@@ -168,11 +169,11 @@ public class CourseControllerV1 {
             @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content(mediaType = "application/problem+json", schema = @Schema(implementation = ProblemDetail.class), examples = @ExampleObject(name = "Internal Error", value = GlobalExceptionJsonExamples.UNEXPECTED_ERROR_RESPONSE)))
     })
     public ResponseEntity<Page<CreateCourseResponseDtoV1>> getStudentCourses(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size,
-            @RequestParam(defaultValue = "id") String sortBy,
-            @RequestParam(defaultValue = "asc") String direction,
-            @RequestParam(required = false) String search) {
+            @Parameter(description = "Page number (0-indexed)") @RequestParam(defaultValue = "0") int page,
+            @Parameter(description = "Number of items per page") @RequestParam(defaultValue = "10") int size,
+            @Parameter(description = "Field to sort by (e.g., 'title', 'idCourses')") @RequestParam(defaultValue = "idCourses") String sortBy,
+            @Parameter(description = "Sort direction (asc or desc)") @RequestParam(defaultValue = "asc") String direction,
+            @Parameter(description = "Search term to filter courses by title or description") @RequestParam(required = false) String search) {
 
         Pageable pageable = PageRequest.of(
                 page,
