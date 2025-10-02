@@ -3,6 +3,7 @@ package com.github.martinalexis.course_management.course.service.v1.facade;
 import com.github.martinalexis.course_management.course.dto.v1.CreateCourseRequestDtoV1;
 import com.github.martinalexis.course_management.course.dto.v1.CreateCourseResponseDtoV1;
 import com.github.martinalexis.course_management.course.dto.v1.EnrollCourseResponseDtoV1;
+import com.github.martinalexis.course_management.course.dto.v1.UpdateCourseRequestDto;
 import com.github.martinalexis.course_management.course.model.CourseModel;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -23,7 +24,7 @@ public interface CourseUseCase {
 
     CreateCourseResponseDtoV1 getById(int idCourse);
 
-    CreateCourseResponseDtoV1 updateCourse(int idCourse, CreateCourseRequestDtoV1 request);
+    CreateCourseResponseDtoV1 updateCourse(int idCourse, UpdateCourseRequestDto request);
 
     CreateCourseResponseDtoV1 deleteCourse(int idCourse);
 

@@ -5,6 +5,7 @@ import com.github.martinalexis.course_management.auth.exceptions.v1.AuthExceptio
 import com.github.martinalexis.course_management.course.dto.v1.CreateCourseRequestDtoV1;
 import com.github.martinalexis.course_management.course.dto.v1.CreateCourseResponseDtoV1;
 import com.github.martinalexis.course_management.course.dto.v1.EnrollCourseResponseDtoV1;
+import com.github.martinalexis.course_management.course.dto.v1.UpdateCourseRequestDto;
 import com.github.martinalexis.course_management.course.exception.v1.CoursesExceptionJsonExamples;
 import com.github.martinalexis.course_management.course.service.v1.facade.CourseUseCase;
 import com.github.martinalexis.course_management.user.model.UserModel;
@@ -96,7 +97,7 @@ public class CourseControllerV1 {
             ),
             @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content(mediaType = "application/problem+json", schema = @Schema(implementation = ProblemDetail.class), examples = @ExampleObject(name = "Internal Error", value = GlobalExceptionJsonExamples.UNEXPECTED_ERROR_RESPONSE)))
     })
-    public ResponseEntity<CreateCourseResponseDtoV1> updateCourse(@PathVariable int idCourse, @Valid @RequestBody CreateCourseRequestDtoV1 request) {
+    public ResponseEntity<CreateCourseResponseDtoV1> updateCourse(@PathVariable int idCourse, @Valid @RequestBody UpdateCourseRequestDto request) {
         return ResponseEntity.status(HttpStatus.OK).body(courseUseCase.updateCourse(idCourse, request));
     }
 

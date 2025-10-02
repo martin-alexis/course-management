@@ -4,6 +4,7 @@ import com.github.martinalexis.course_management.auth.service.v1.AuthService;
 import com.github.martinalexis.course_management.course.dto.v1.CreateCourseRequestDtoV1;
 import com.github.martinalexis.course_management.course.dto.v1.CreateCourseResponseDtoV1;
 import com.github.martinalexis.course_management.course.dto.v1.EnrollCourseResponseDtoV1;
+import com.github.martinalexis.course_management.course.dto.v1.UpdateCourseRequestDto;
 import com.github.martinalexis.course_management.course.mapper.v1.CourseMapperV1;
 import com.github.martinalexis.course_management.course.model.CourseModel;
 import com.github.martinalexis.course_management.course.model.UserHasCoursesModel;
@@ -40,13 +41,13 @@ public class CourseFacade implements CourseUseCase {
     }
 
     @Override
-    public CreateCourseResponseDtoV1 updateCourse(int idCourse, CreateCourseRequestDtoV1 request) {
+    public CreateCourseResponseDtoV1 updateCourse(int idCourse, UpdateCourseRequestDto request) {
         UserModel currentUser = authService.getCurrentUser();
 
         CourseModel courseToUpdate = courseService.findByIdOrThrow(idCourse);
 
         verifyUserOwnCourseRule.execute(currentUser, courseToUpdate);
-        CourseModel course = courseMapper.toEntity(request);
+        CourseModel course = courseMapper.updateCourseRequestToEntity(request);
         CourseModel updatedCourse = courseService.updateCourse(course, courseToUpdate);
         CreateCourseResponseDtoV1 response = courseMapper.toResponse(updatedCourse);
         response.setTeacherName(courseService.getTeacherName(updatedCourse));
