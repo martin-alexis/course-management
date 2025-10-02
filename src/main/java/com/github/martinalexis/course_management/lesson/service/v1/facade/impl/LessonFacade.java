@@ -1,12 +1,12 @@
 package com.github.martinalexis.course_management.lesson.service.v1.facade.impl;
 
 import com.github.martinalexis.course_management.auth.service.v1.AuthService;
-import com.github.martinalexis.course_management.course.dto.v1.CreateCourseResponseDtoV1;
 import com.github.martinalexis.course_management.course.model.CourseModel;
 import com.github.martinalexis.course_management.course.service.v1.CourseServiceV1;
 import com.github.martinalexis.course_management.course.service.v1.rules.VerifyUserOwnCourseRule;
-import com.github.martinalexis.course_management.lesson.dto.v1.LessonRequestDto;
+import com.github.martinalexis.course_management.lesson.dto.v1.CreateLessonRequestDto;
 import com.github.martinalexis.course_management.lesson.dto.v1.LessonResponseDto;
+import com.github.martinalexis.course_management.lesson.dto.v1.UpdateLessonRequestDto;
 import com.github.martinalexis.course_management.lesson.mapper.v1.LessonMapper;
 import com.github.martinalexis.course_management.lesson.model.LessonModel;
 import com.github.martinalexis.course_management.lesson.service.v1.LessonService;
@@ -27,14 +27,14 @@ public class LessonFacade implements LessonUseCase {
     private final VerifyUserOwnCourseRule verifyUserOwnCourseRule;
 
     @Override
-    public LessonResponseDto createLesson(int idCourse, LessonRequestDto request) {
+    public LessonResponseDto createLesson(int idCourse, CreateLessonRequestDto request) {
         UserModel currentUser = authService.getCurrentUser();
 
         CourseModel course = courseService.findByIdOrThrow(idCourse);
 
         verifyUserOwnCourseRule.execute(currentUser, course);
 
-        LessonModel newLesson = lessonMapper.lessonRequestTtoEntity(request);
+        LessonModel newLesson = lessonMapper.createLessonRequestTtoEntity(request);
 
         LessonModel savedLesson = lessonService.saveLesson(newLesson, course);
 
@@ -63,19 +63,31 @@ public class LessonFacade implements LessonUseCase {
     }
 
     @Override
-    public LessonResponseDto updateLesson(int idLesson, LessonRequestDto request) {
-        return null;
+    public LessonResponseDto updateLesson(int idLesson, int idCourse, UpdateLessonRequestDto request) {
+        UserModel currentUser = authService.getCurrentUser();
+
+        LessonModel lessonToUpdate = lessonService.findByIdOrThrow(idLesson);
+
+        CourseModel course = courseService.findByIdOrThrow(idCourse);
+
+        verifyUserOwnCourseRule.execute(currentUser, course);
+
+        LessonModel lesson = lessonMapper.updateLessonRequestToEntity(request);
+
+        LessonModel updatedLesson = lessonService.updateLesson(lesson, lessonToUpdate);
+
+        return lessonMapper.lessonEntityToResponse(updatedLesson);
     }
 
     @Override
     public LessonResponseDto deleteLesson(int idLesson, int idCourse) {
-        authService.getCurrentUser();
+        UserModel currentUser = authService.getCurrentUser();
 
         CourseModel course = courseService.findByIdOrThrow(idCourse);
 
         LessonModel lesson = lessonService.findByIdOrThrow(idLesson);
 
-        verifyUserOwnCourseRule.execute(authService.getCurrentUser(), course);
+        verifyUserOwnCourseRule.execute(currentUser, course);
 
         LessonModel deletedLesson = lessonService.deleteLesson(lesson);
 

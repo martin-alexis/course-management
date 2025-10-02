@@ -1,13 +1,11 @@
 package com.github.martinalexis.course_management.lesson.controller.v1;
 
 import com.github.martinalexis.course_management.auth.exceptions.v1.AuthExceptionJsonExamples;
-import com.github.martinalexis.course_management.auth.service.v1.AuthService;
-import com.github.martinalexis.course_management.auth.service.v1.facade.AuthUseCase;
 import com.github.martinalexis.course_management.common.exceptions.GlobalExceptionJsonExamples;
-import com.github.martinalexis.course_management.course.dto.v1.CreateCourseResponseDtoV1;
 import com.github.martinalexis.course_management.course.exception.v1.CoursesExceptionJsonExamples;
-import com.github.martinalexis.course_management.lesson.dto.v1.LessonRequestDto;
+import com.github.martinalexis.course_management.lesson.dto.v1.CreateLessonRequestDto;
 import com.github.martinalexis.course_management.lesson.dto.v1.LessonResponseDto;
+import com.github.martinalexis.course_management.lesson.dto.v1.UpdateLessonRequestDto;
 import com.github.martinalexis.course_management.lesson.service.v1.facade.LessonUseCase;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -85,7 +83,7 @@ public class LessonControllerV1 {
                             examples = @ExampleObject(name = "Internal Error", value = GlobalExceptionJsonExamples.UNEXPECTED_ERROR_RESPONSE))
             )
     })
-    public ResponseEntity<LessonResponseDto> createLesson(@PathVariable int idCourse, @Valid @RequestBody LessonRequestDto request) {
+    public ResponseEntity<LessonResponseDto> createLesson(@PathVariable int idCourse, @Valid @RequestBody CreateLessonRequestDto request) {
         return ResponseEntity.status(HttpStatus.CREATED).body(lessonUseCase.createLesson(idCourse, request));
     }
 
@@ -222,4 +220,8 @@ public class LessonControllerV1 {
         return ResponseEntity.ok(lessonUseCase.deleteLesson(idLesson, idCourse));
     }
 
+    @PatchMapping("/{idLesson}")
+    public ResponseEntity<LessonResponseDto> updateCourse (@PathVariable int idCourse, @PathVariable int idLesson, @Valid @RequestBody UpdateLessonRequestDto request) {
+        return ResponseEntity.status(HttpStatus.OK).body(lessonUseCase.updateLesson(idLesson, idCourse, request));
+    }
 }

@@ -8,13 +8,11 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.URL;
 
-import java.time.LocalDateTime;
-
 
 @AllArgsConstructor
 @Data
 @NoArgsConstructor
-public class LessonRequestDto {
+public class CreateLessonRequestDto {
 
     @NotBlank(message = "Title is mandatory")
     @Schema(description = "Title of the lesson", example = "Introduction to Java", required = true)

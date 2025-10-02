@@ -29,6 +29,20 @@ public class LessonService {
         return lesson;
     }
 
+    public LessonModel updateLesson(LessonModel lesson, LessonModel lessonToUpdate) {
+        if (lesson.getTitle() != null) {
+            lessonToUpdate.setTitle(lesson.getTitle());
+        }
+        if (lesson.getDescription() != null) {
+            lessonToUpdate.setDescription(lesson.getDescription());
+        }
+        if (lesson.getVideoUrl() != null) {
+            lessonToUpdate.setVideoUrl(lesson.getVideoUrl());
+        }
+        return lessonRepository.save(lessonToUpdate);
+    }
+
+
     public Page<LessonModel> getLessonsByCourse(CourseModel course, String search, Pageable pageable) {
         return lessonRepository.findLessonsByCourseAndFilters(course, search, pageable);
     }
