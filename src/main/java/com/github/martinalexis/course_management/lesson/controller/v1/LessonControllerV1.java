@@ -221,7 +221,59 @@ public class LessonControllerV1 {
     }
 
     @PatchMapping("/{idLesson}")
-    public ResponseEntity<LessonResponseDto> updateCourse (@PathVariable int idCourse, @PathVariable int idLesson, @Valid @RequestBody UpdateLessonRequestDto request) {
-        return ResponseEntity.status(HttpStatus.OK).body(lessonUseCase.updateLesson(idLesson, idCourse, request));
+    @Operation(
+            summary = "Update a lesson",
+            description = "Updates the details of a specific lesson. Only the teacher who owns the course can perform this action."
+    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Lesson updated successfully",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = LessonResponseDto.class))
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "Invalid input data. One or more fields in the request body are invalid.",
+                    content = @Content(mediaType = "application/problem+json", schema = @Schema(implementation = ProblemDetail.class),
+                            examples = @ExampleObject(name = "Validation Error", value = GlobalExceptionJsonExamples.VALIDATION_FAILED_RESPONSE))
+            ),
+            @ApiResponse(
+                    responseCode = "401",
+                    description = "Unauthorized. A valid JWT Bearer token is required.",
+                    content = @Content(mediaType = "application/problem+json", schema = @Schema(implementation = ProblemDetail.class),
+                            examples = @ExampleObject(name = "Unauthorized", value = AuthExceptionJsonExamples.UNAUTHORIZED_RESPONSE))
+            ),
+            @ApiResponse(
+                    responseCode = "403",
+                    description = "Forbidden. The authenticated user does not own the course.",
+                    content = @Content(mediaType = "application/problem+json", schema = @Schema(implementation = ProblemDetail.class),
+                            examples = @ExampleObject(name = "User Not Owner", value = CoursesExceptionJsonExamples.USER_NOT_OWN_COURSE_RESPONSE))
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "Resource not found. Either the course or the lesson does not exist.",
+                    content = @Content(mediaType = "application/problem+json", schema = @Schema(implementation = ProblemDetail.class),
+                            examples = @ExampleObject(name = "Resource Not Found", value = GlobalExceptionJsonExamples.RESOURCE_NOT_FOUND_RESPONSE))
+            ),
+            @ApiResponse(
+                    responseCode = "409",
+                    description = "A unique constraint was violated (e.g., a lesson with the same title already exists for this course).",
+                    content = @Content(mediaType = "application/problem+json", schema = @Schema(implementation = ProblemDetail.class),
+                            examples = @ExampleObject(name = "Unique Constraint Violation", value = GlobalExceptionJsonExamples.UNIQUE_CONSTRAINT_VIOLATION_RESPONSE))
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "Internal Server Error.",
+                    content = @Content(mediaType = "application/problem+json", schema = @Schema(implementation = ProblemDetail.class),
+                            examples = @ExampleObject(name = "Internal Error", value = GlobalExceptionJsonExamples.UNEXPECTED_ERROR_RESPONSE))
+            )
+    })
+    public ResponseEntity<LessonResponseDto> updateLesson(
+            @io.swagger.v3.oas.annotations.Parameter(description = "ID of the course the lesson belongs to")
+            @PathVariable int idCourse,
+            @io.swagger.v3.oas.annotations.Parameter(description = "ID of the lesson to update")
+            @PathVariable int idLesson,
+            @Valid @RequestBody UpdateLessonRequestDto request) {
+        return ResponseEntity.ok(lessonUseCase.updateLesson(idLesson, idCourse, request));
     }
 }
