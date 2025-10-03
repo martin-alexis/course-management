@@ -4,6 +4,8 @@ package com.github.martinalexis.course_management.review.model;
 import com.github.martinalexis.course_management.course.model.CourseModel;
 import com.github.martinalexis.course_management.user.model.UserModel;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import lombok.*;
 
 import java.math.BigDecimal;
@@ -28,8 +30,9 @@ public class ReviewModel {
     @Column(name = "comment", columnDefinition = "TEXT")
     private String comment;
 
-    @Column(name = "score", nullable = false, precision = 10, scale = 2)
-    private BigDecimal score;
+    @Min(1) @Max(5)
+    @Column(name = "score", nullable = false)
+    private Integer score;
 
     @Column(name = "created_on", nullable = false)
     private LocalDateTime createdOn;
