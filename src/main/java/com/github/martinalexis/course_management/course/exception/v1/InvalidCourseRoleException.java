@@ -14,7 +14,7 @@ public class InvalidCourseRoleException extends RuntimeException {
         } else if (expectedRole == RoleEnum.STUDENT) {
             return "User is not enrolled as a student in this course.";
         }
-
+        return "User does not have the required role for this course.";
     }
 
 }
