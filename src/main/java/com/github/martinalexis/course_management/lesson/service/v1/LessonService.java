@@ -24,9 +24,8 @@ public class LessonService {
         return  lessonRepository.save(newLesson);
     }
 
-    public LessonModel deleteLesson (LessonModel lesson) {
+    public void deleteLesson (LessonModel lesson) {
         lessonRepository.delete(lesson);
-        return lesson;
     }
 
     public LessonModel updateLesson(LessonModel lesson, LessonModel lessonToUpdate) {

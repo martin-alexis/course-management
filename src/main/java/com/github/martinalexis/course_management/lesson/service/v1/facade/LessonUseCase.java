@@ -17,6 +17,6 @@ public interface LessonUseCase {
 
     LessonResponseDto updateLesson(int idLesson, int idCourse, UpdateLessonRequestDto request);
 
-    LessonResponseDto deleteLesson(int idLesson, int idCourse);
+    void deleteLesson(int idLesson, int idCourse);
 
 }

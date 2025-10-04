@@ -182,9 +182,8 @@ public class LessonControllerV1 {
     )
     @ApiResponses({
             @ApiResponse(
-                    responseCode = "200",
-                    description = "Lesson deleted successfully. The deleted lesson's data is returned.",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = LessonResponseDto.class))
+                    responseCode = "204",
+                    description = "Lesson deleted successfully."
             ),
             @ApiResponse(
                     responseCode = "401",
@@ -211,13 +210,14 @@ public class LessonControllerV1 {
                             examples = @ExampleObject(name = "Internal Error", value = GlobalExceptionJsonExamples.UNEXPECTED_ERROR_RESPONSE))
             )
     })
-    public ResponseEntity<LessonResponseDto> deleteLesson(
+    public ResponseEntity<Void> deleteLesson(
             @io.swagger.v3.oas.annotations.Parameter(description = "ID of the course the lesson belongs to")
             @PathVariable int idCourse,
             @io.swagger.v3.oas.annotations.Parameter(description = "ID of the lesson to delete")
             @PathVariable int idLesson
     ) {
-        return ResponseEntity.ok(lessonUseCase.deleteLesson(idLesson, idCourse));
+        lessonUseCase.deleteLesson(idLesson, idCourse);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
     @PatchMapping("/{idLesson}")
