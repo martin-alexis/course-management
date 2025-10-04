@@ -12,6 +12,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -36,5 +37,14 @@ public class ReviewService {
     public Page<ReviewModel> getReviewsByCourse(CourseModel course, Pageable pageable) {
         return reviewRepository.findByCourse(course, pageable);
     }
+
+    public double calculateAverageRating(List<ReviewModel> reviews) {
+        return reviews.stream()
+                .mapToDouble(ReviewModel::getScore)
+                .average()
+                .orElse(0.0);
+    }
+
+
 
 }
