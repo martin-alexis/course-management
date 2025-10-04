@@ -14,6 +14,7 @@ import com.github.martinalexis.course_management.review.model.ReviewModel;
 import com.github.martinalexis.course_management.review.service.v1.ReviewService;
 import com.github.martinalexis.course_management.review.service.v1.facade.ReviewUseCase;
 import com.github.martinalexis.course_management.review.service.v1.rules.StudentAlreadyReviewedInCourseRole;
+import com.github.martinalexis.course_management.review.service.v1.rules.VerifyReviewBelongsToUserRule;
 import com.github.martinalexis.course_management.user.model.UserModel;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -27,6 +28,7 @@ public class ReviewFacade implements ReviewUseCase {
     private final CourseServiceV1 courseService;
     private final VerifyStudentEnrolledInCourseRule verifyStudentEnrolledInCourseRule;
     private final StudentAlreadyReviewedInCourseRole studentAlreadyEnrolledRule;
+    private final VerifyReviewBelongsToUserRule verifyReviewBelongsToUserRule;
 
     @Override
     public CreateReviewResponseDto createReview(int idCourse, CreateReviewRequestDto request) {
@@ -47,6 +49,16 @@ public class ReviewFacade implements ReviewUseCase {
 
     @Override
     public void DeleteReview(int idReview) {
+        UserModel currentUser = authService.getCurrentUser();
+
+        ReviewModel review = reviewService.findByIdOrThrow(idReview);
+
+        verifyStudentEnrolledInCourseRule.execute(currentUser, review.getCourse());
+
+        verifyReviewBelongsToUserRule.execute(review, currentUser);
+
+        reviewService.deleteReview(review);
+
 
     }
 

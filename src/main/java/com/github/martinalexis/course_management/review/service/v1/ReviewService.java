@@ -1,6 +1,7 @@
 package com.github.martinalexis.course_management.review.service.v1;
 
 
+import com.github.martinalexis.course_management.common.exceptions.ResourceNotFoundException;
 import com.github.martinalexis.course_management.course.model.CourseModel;
 import com.github.martinalexis.course_management.review.model.ReviewModel;
 import com.github.martinalexis.course_management.review.repository.ReviewRepository;
@@ -20,7 +21,15 @@ public class ReviewService {
         newReview.setUser(user);
         newReview.setCreatedOn(LocalDateTime.now());
         return reviewRepository.save(newReview);
+        }
+
+    public void deleteReview(ReviewModel review) {
+        reviewRepository.delete(review);
 
     }
+    public ReviewModel findByIdOrThrow(int idReview) {
+        return reviewRepository.findById(idReview).orElseThrow(() -> new ResourceNotFoundException("Review", idReview));
+    }
+
 
 }

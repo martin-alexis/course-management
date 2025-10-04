@@ -32,7 +32,7 @@ public class ReviewController {
 
     private final ReviewUseCase reviewUseCase;
 
-    @PostMapping("/courses{idCourse}/reviews")
+    @PostMapping("/courses/{idCourse}/reviews")
     @Operation(
             summary = "Create a new review for a course",
             description = "Creates a new review for a specific course. The user must be authenticated and enrolled as a student in the course to perform this action."
@@ -84,5 +84,11 @@ public class ReviewController {
             @Parameter(description = "ID of the course to be reviewed") @PathVariable int idCourse,
             @Valid @RequestBody CreateReviewRequestDto request) {
         return ResponseEntity.status(HttpStatus.CREATED).body(reviewUseCase.createReview(idCourse, request));
+    }
+
+    @DeleteMapping("/reviews/{idReview}")
+    public ResponseEntity DeleteReview (@PathVariable int idReview) {
+        reviewUseCase.DeleteReview(idReview);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }
