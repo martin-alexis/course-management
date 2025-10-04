@@ -7,6 +7,8 @@ import com.github.martinalexis.course_management.review.model.ReviewModel;
 import com.github.martinalexis.course_management.review.repository.ReviewRepository;
 import com.github.martinalexis.course_management.user.model.UserModel;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -31,5 +33,8 @@ public class ReviewService {
         return reviewRepository.findById(idReview).orElseThrow(() -> new ResourceNotFoundException("Review", idReview));
     }
 
+    public Page<ReviewModel> getReviewsByCourse(CourseModel course, Pageable pageable) {
+        return reviewRepository.findByCourse(course, pageable);
+    }
 
 }

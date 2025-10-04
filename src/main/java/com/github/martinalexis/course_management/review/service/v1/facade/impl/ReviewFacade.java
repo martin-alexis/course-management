@@ -17,6 +17,8 @@ import com.github.martinalexis.course_management.review.service.v1.rules.Student
 import com.github.martinalexis.course_management.review.service.v1.rules.VerifyReviewBelongsToUserRule;
 import com.github.martinalexis.course_management.user.model.UserModel;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -69,5 +71,20 @@ public class ReviewFacade implements ReviewUseCase {
         ReviewModel review = reviewService.findByIdOrThrow(idReview);
 
         return reviewMapper.createReviewRequestToDto(review);
+    }
+
+    @Override
+    public Page<CreateReviewResponseDto> getAllReviewsByCourse(int idCourse, Pageable pageable) {
+        authService.getCurrentUser();
+
+        CourseModel course = courseService.findByIdOrThrow(idCourse);
+
+        Page<ReviewModel> reviews = reviewService.getReviewsByCourse(course, pageable);
+
+        return reviews.map(review -> {
+            CreateReviewResponseDto response = reviewMapper.createReviewRequestToDto(review);
+            return response;
+        });
+
     }
 }

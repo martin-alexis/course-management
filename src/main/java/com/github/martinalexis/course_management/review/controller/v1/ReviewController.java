@@ -18,6 +18,10 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
@@ -161,5 +165,51 @@ public class ReviewController {
     public ResponseEntity<CreateReviewResponseDto> getReview(
             @Parameter(description = "ID of the review to retrieve") @PathVariable int idReview) {
         return ResponseEntity.ok(reviewUseCase.getById(idReview));
+    }
+
+    @GetMapping("/courses/{idCourse}/reviews")
+    @Operation(
+            summary = "Get all reviews for a course",
+            description = "Retrieves a paginated list of all reviews associated with a specific course. Supports sorting."
+    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Reviews retrieved successfully."
+                    // El tipo de contenido (Page<CreateReviewResponseDto>) es inferido por SpringDoc
+            ),
+            @ApiResponse(
+                    responseCode = "401",
+                    description = "Unauthorized. A valid JWT Bearer token is required.",
+                    content = @Content(mediaType = "application/problem+json", schema = @Schema(implementation = ProblemDetail.class),
+                            examples = @ExampleObject(name = "Unauthorized", value = AuthExceptionJsonExamples.UNAUTHORIZED_RESPONSE))
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "Course not found with the provided ID.",
+                    content = @Content(mediaType = "application/problem+json", schema = @Schema(implementation = ProblemDetail.class),
+                            examples = @ExampleObject(name = "Resource Not Found", value = GlobalExceptionJsonExamples.RESOURCE_NOT_FOUND_RESPONSE))
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "Internal Server Error.",
+                    content = @Content(mediaType = "application/problem+json", schema = @Schema(implementation = ProblemDetail.class),
+                            examples = @ExampleObject(name = "Internal Error", value = GlobalExceptionJsonExamples.UNEXPECTED_ERROR_RESPONSE))
+            )
+    })
+    public ResponseEntity<Page<CreateReviewResponseDto>> getReviewsByCourse(
+            @Parameter(description = "ID of the course to get reviews from") @PathVariable int idCourse,
+            @Parameter(description = "Page number (0-indexed)") @RequestParam(defaultValue = "0") int page,
+            @Parameter(description = "Number of items per page") @RequestParam(defaultValue = "10") int size,
+            @Parameter(description = "Field to sort by (e.g., 'createdOn', 'score')") @RequestParam(defaultValue = "createdOn") String sortBy,
+            @Parameter(description = "Sort direction (asc or desc)") @RequestParam(defaultValue = "asc") String direction
+    ) {
+        Pageable pageable = PageRequest.of(
+                page,
+                size,
+                Sort.by(Sort.Direction.fromString(direction), sortBy)
+        );
+
+        return ResponseEntity.ok(reviewUseCase.getAllReviewsByCourse(idCourse, pageable));
     }
 }
