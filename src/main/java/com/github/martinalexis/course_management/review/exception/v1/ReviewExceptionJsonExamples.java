@@ -11,6 +11,15 @@ public class ReviewExceptionJsonExamples {
                   "instance": "/api/v1/courses/123/reviews"
                 }
             """;
-
- }
+    public static final String REVIEW_DOES_NOT_BELONG_TO_USER_RESPONSE = """
+                {
+                 "type": "https://example.com/errors/forbidden-access",
+                 "title": "Forbidden Access",
+                 "status": 403,
+                 "detail": "The review does not belong to the current user.",
+                 "instance": "/api/v1/courses/123/reviews"
+                 }
+            
+            """;
+}
 

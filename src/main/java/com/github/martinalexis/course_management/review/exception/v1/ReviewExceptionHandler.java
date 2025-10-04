@@ -29,4 +29,15 @@ public class ReviewExceptionHandler {
         return problem;
     }
 
+    @ExceptionHandler(ReviewDoesNotBelongToUserException.class)
+    public ProblemDetail handleReviewDoesNotBelongToUser(ReviewDoesNotBelongToUserException ex, WebRequest request) {
+        log.warn(ex.getMessage(), ex);
+        ProblemDetail problem = ProblemDetail.forStatus(HttpStatus.CONFLICT);
+        problem.setTitle("Review does not belong to user");
+        problem.setDetail(ex.getMessage());
+        problem.setType(URI.create("https://example.com/errors/review-does-not-belong-to-user"));
+        problem.setInstance(URI.create(request.getDescription(false).replace("uri=", "")));
+        return problem;
+    }
+
 }
