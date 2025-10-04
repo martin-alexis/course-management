@@ -19,6 +19,8 @@ public class CreateCourseResponseDtoV1 {
     private String description;
     @Schema(description = "Teacher full name", example = "Alexis Martin")
     private String teacherName;
+    @Schema(description = "Average rating", example = "4.5")
+    private Double rating;
     @Schema(description = "Creation date", example = "2025-09-10T10:15:30")
     private LocalDateTime createdOn;
 }
