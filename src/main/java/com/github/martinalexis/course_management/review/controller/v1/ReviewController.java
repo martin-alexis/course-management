@@ -87,8 +87,79 @@ public class ReviewController {
     }
 
     @DeleteMapping("/reviews/{idReview}")
-    public ResponseEntity DeleteReview (@PathVariable int idReview) {
-        reviewUseCase.DeleteReview(idReview);
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    @Operation(
+            summary = "Delete a review",
+            description = "Deletes a review. The user must be authenticated and must be the owner of the review to perform this action."
+    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "204",
+                    description = "Review deleted successfully. No content is returned."
+            ),
+            @ApiResponse(
+                    responseCode = "401",
+                    description = "Unauthorized. A valid JWT Bearer token is required.",
+                    content = @Content(mediaType = "application/problem+json", schema = @Schema(implementation = ProblemDetail.class),
+                            examples = @ExampleObject(name = "Unauthorized", value = AuthExceptionJsonExamples.UNAUTHORIZED_RESPONSE))
+            ),
+            @ApiResponse(
+                    responseCode = "403",
+                    description = "Forbidden. The authenticated user does not own this review.",
+                    content = @Content(mediaType = "application/problem+json", schema = @Schema(implementation = ProblemDetail.class),
+                            examples = @ExampleObject(name = "Not Review Owner", value = ReviewExceptionJsonExamples.REVIEW_DOES_NOT_BELONG_TO_USER_RESPONSE))
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "Review not found with the provided ID.",
+                    content = @Content(mediaType = "application/problem+json", schema = @Schema(implementation = ProblemDetail.class),
+                            examples = @ExampleObject(name = "Resource Not Found", value = GlobalExceptionJsonExamples.RESOURCE_NOT_FOUND_RESPONSE))
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "Internal Server Error.",
+                    content = @Content(mediaType = "application/problem+json", schema = @Schema(implementation = ProblemDetail.class),
+                            examples = @ExampleObject(name = "Internal Error", value = GlobalExceptionJsonExamples.UNEXPECTED_ERROR_RESPONSE))
+            )
+    })
+    public ResponseEntity<Void> deleteReview(
+            @Parameter(description = "ID of the review to delete") @PathVariable int idReview) {
+        reviewUseCase.deleteReview(idReview);
+        return ResponseEntity.noContent().build();
+
+    }
+
+    @GetMapping("/reviews/{idReview}")
+    @Operation(
+            summary = "Get a single review by its ID",
+            description = "Retrieves the details of a specific review by its unique identifier. The user must be authenticated to perform this action."
+    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Review found successfully.",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = CreateReviewResponseDto.class))
+            ),
+            @ApiResponse(
+                    responseCode = "401",
+                    description = "Unauthorized. A valid JWT Bearer token is required.",
+                    content = @Content(mediaType = "application/problem+json", schema = @Schema(implementation = ProblemDetail.class),
+                            examples = @ExampleObject(name = "Unauthorized", value = AuthExceptionJsonExamples.UNAUTHORIZED_RESPONSE))
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "Review not found with the provided ID.",
+                    content = @Content(mediaType = "application/problem+json", schema = @Schema(implementation = ProblemDetail.class),
+                            examples = @ExampleObject(name = "Resource Not Found", value = GlobalExceptionJsonExamples.RESOURCE_NOT_FOUND_RESPONSE))
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "Internal Server Error.",
+                    content = @Content(mediaType = "application/problem+json", schema = @Schema(implementation = ProblemDetail.class),
+                            examples = @ExampleObject(name = "Internal Error", value = GlobalExceptionJsonExamples.UNEXPECTED_ERROR_RESPONSE))
+            )
+    })
+    public ResponseEntity<CreateReviewResponseDto> getReview(
+            @Parameter(description = "ID of the review to retrieve") @PathVariable int idReview) {
+        return ResponseEntity.ok(reviewUseCase.getById(idReview));
     }
 }

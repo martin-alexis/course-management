@@ -48,7 +48,7 @@ public class ReviewFacade implements ReviewUseCase {
     }
 
     @Override
-    public void DeleteReview(int idReview) {
+    public void deleteReview(int idReview) {
         UserModel currentUser = authService.getCurrentUser();
 
         ReviewModel review = reviewService.findByIdOrThrow(idReview);
@@ -64,6 +64,10 @@ public class ReviewFacade implements ReviewUseCase {
 
     @Override
     public CreateReviewResponseDto getById(int idReview) {
-        return null;
+        authService.getCurrentUser();
+
+        ReviewModel review = reviewService.findByIdOrThrow(idReview);
+
+        return reviewMapper.createReviewRequestToDto(review);
     }
 }

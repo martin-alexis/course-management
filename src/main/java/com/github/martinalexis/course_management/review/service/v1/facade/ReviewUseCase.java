@@ -7,7 +7,7 @@ public interface ReviewUseCase {
 
     CreateReviewResponseDto createReview(int idCourse, CreateReviewRequestDto request);
 
-    void DeleteReview(int idReview);
+    void deleteReview(int idReview);
 
     CreateReviewResponseDto getById (int idReview);
 
