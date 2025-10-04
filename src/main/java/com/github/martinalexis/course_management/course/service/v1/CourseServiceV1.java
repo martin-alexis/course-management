@@ -35,9 +35,8 @@ public class CourseServiceV1 {
         return courseRepository.save(courseToUpdate);
     }
 
-    public CourseModel deleteCourse(CourseModel course) {
+    public void deleteCourse(CourseModel course) {
         courseRepository.delete(course);
-        return course;
     }
 
     public CourseModel findByIdOrThrow(int idCourse) {

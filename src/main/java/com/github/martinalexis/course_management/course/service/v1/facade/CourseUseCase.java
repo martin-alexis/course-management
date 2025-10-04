@@ -26,6 +26,6 @@ public interface CourseUseCase {
 
     CreateCourseResponseDtoV1 updateCourse(int idCourse, UpdateCourseRequestDto request);
 
-    CreateCourseResponseDtoV1 deleteCourse(int idCourse);
+    void deleteCourse(int idCourse);
 
 }

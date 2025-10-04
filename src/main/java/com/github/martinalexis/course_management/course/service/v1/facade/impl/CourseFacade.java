@@ -61,16 +61,14 @@ public class CourseFacade implements CourseUseCase {
     }
 
     @Override
-    public CreateCourseResponseDtoV1 deleteCourse(int idCourse) {
+    public void deleteCourse(int idCourse) {
         UserModel currentUser = authService.getCurrentUser();
 
         CourseModel courseToDelete = courseService.findByIdOrThrow(idCourse);
 
         verifyUserOwnCourseRule.execute(currentUser, courseToDelete);
 
-        CourseModel deletedCourse = courseService.deleteCourse(courseToDelete);
-
-        return courseMapper.toResponse(deletedCourse);
+        courseService.deleteCourse(courseToDelete);
     }
 
     @Transactional

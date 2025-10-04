@@ -104,14 +104,15 @@ public class CourseControllerV1 {
     @DeleteMapping("/{idCourse}")
     @Operation(summary = "Delete a course", description = "Deletes a course. Only the teacher who owns the course can perform this action.")
     @ApiResponses({
-            @ApiResponse(responseCode = "204", description = "Course deleted successfully", content = @Content(mediaType = "application/json", schema = @Schema(implementation = CreateCourseResponseDtoV1.class))),
+            @ApiResponse(responseCode = "204", description = "Course deleted successfully"),
             @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content(mediaType = "application/problem+json", schema = @Schema(implementation = ProblemDetail.class), examples = @ExampleObject(name = "Unauthorized", value = AuthExceptionJsonExamples.UNAUTHORIZED_RESPONSE))),
             @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content(mediaType = "application/problem+json", schema = @Schema(implementation = ProblemDetail.class), examples = @ExampleObject(name = "User Not Owner", value = CoursesExceptionJsonExamples.USER_NOT_OWN_COURSE_RESPONSE))),
             @ApiResponse(responseCode = "404", description = "Course not found", content = @Content(mediaType = "application/problem+json", schema = @Schema(implementation = ProblemDetail.class), examples = @ExampleObject(name = "Resource Not Found", value = GlobalExceptionJsonExamples.RESOURCE_NOT_FOUND_RESPONSE))),
             @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content(mediaType = "application/problem+json", schema = @Schema(implementation = ProblemDetail.class), examples = @ExampleObject(name = "Internal Error", value = GlobalExceptionJsonExamples.UNEXPECTED_ERROR_RESPONSE)))
     })
-    public ResponseEntity<CreateCourseResponseDtoV1> deleteCourse(@PathVariable int idCourse) {
-        return ResponseEntity.status(HttpStatus.OK).body(courseUseCase.deleteCourse(idCourse));
+    public ResponseEntity<Void> deleteCourse(@PathVariable int idCourse) {
+        courseUseCase.deleteCourse(idCourse);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
     @GetMapping
