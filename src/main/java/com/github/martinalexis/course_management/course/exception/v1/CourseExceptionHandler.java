@@ -27,13 +27,13 @@ public class CourseExceptionHandler {
         return problem;
     }
 
-    @ExceptionHandler(UserNotOwnCourseException.class)
-    public ProblemDetail handleUserNotOwnCourse(UserNotOwnCourseException ex, WebRequest request) {
+    @ExceptionHandler(InvalidCourseRoleException.class)
+    public ProblemDetail handleInvalidRoleForCourse(InvalidCourseRoleException ex, WebRequest request) {
         log.warn(ex.getMessage(), ex);
         ProblemDetail problem = ProblemDetail.forStatus(HttpStatus.FORBIDDEN);
-        problem.setTitle("User not own course");
+        problem.setTitle("User has not allowed role");
         problem.setDetail(ex.getMessage());
-        problem.setType(URI.create("https://example.com/errors/user-not-own-course"));
+        problem.setType(URI.create("https://example.com/errors/invalid-course-role"));
         problem.setInstance(URI.create(request.getDescription(false).replace("uri=", "")));
         return problem;
     }

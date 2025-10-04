@@ -1,6 +1,6 @@
 package com.github.martinalexis.course_management.course.service.v1.rules;
 
-import com.github.martinalexis.course_management.course.exception.v1.UserNotOwnCourseException;
+import com.github.martinalexis.course_management.course.exception.v1.InvalidCourseRoleException;
 import com.github.martinalexis.course_management.course.model.CourseModel;
 import com.github.martinalexis.course_management.course.model.RoleEnum;
 import com.github.martinalexis.course_management.user.model.UserModel;
@@ -14,7 +14,7 @@ public class VerifyUserOwnCourseRule {
                 .anyMatch(uc -> uc.getUser().getIdUser().equals(user.getIdUser()) && uc.getRole().getRole().equals(RoleEnum.TEACHER));
 
         if (!isTeacher) {
-            throw new UserNotOwnCourseException();
+            throw new InvalidCourseRoleException(RoleEnum.TEACHER);
         }
     }
 }

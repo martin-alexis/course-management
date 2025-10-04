@@ -5,7 +5,7 @@ public class CoursesExceptionJsonExamples {
      * Example response for when a user tries to modify or delete a course
      * they do not own (i.e., they are not the TEACHER).
      * This typically results in a 403 Forbidden status.
-     * Corresponds to: UserNotOwnCourseException
+     * Corresponds to: InvalidCourseRoleException
      */
     public static final String USER_NOT_OWN_COURSE_RESPONSE = """
                 {
@@ -13,6 +13,16 @@ public class CoursesExceptionJsonExamples {
                   "title": "Forbidden Access",
                   "status": 403,
                   "detail": "The user is not authorized to perform this action on the specified course.",
+                  "instance": "/api/v1/courses/123"
+                }
+            """;
+
+    public static final String USER_NOT_ENROLLED_COURSE_RESPONSE = """
+                {
+                  "type": "https://example.com/errors/forbidden-access",
+                  "title": "Forbidden Access",
+                  "status": 403,
+                  "detail": "User is not enrolled as a student in this course.",
                   "instance": "/api/v1/courses/123"
                 }
             """;
