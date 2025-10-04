@@ -14,6 +14,7 @@ import com.github.martinalexis.course_management.course.service.v1.facade.Course
 import com.github.martinalexis.course_management.course.service.v1.rules.StudentAlreadyEnrolledRule;
 import com.github.martinalexis.course_management.course.service.v1.rules.TeacherCannotEnrollInOwnCourseRule;
 import com.github.martinalexis.course_management.course.service.v1.rules.VerifyUserOwnCourseRule;
+import com.github.martinalexis.course_management.review.service.v1.ReviewService;
 import com.github.martinalexis.course_management.user.model.UserModel;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -27,6 +28,7 @@ public class CourseFacade implements CourseUseCase {
     private final AuthService authService;
     private final CourseServiceV1 courseService;
     private final UserHasCoursesService userHasCoursesService;
+    private final ReviewService reviewService;
     private final StudentAlreadyEnrolledRule studentAlreadyEnrolledRule;
     private final TeacherCannotEnrollInOwnCourseRule teacherCannotEnrollInOwnCourseRule;
     private final VerifyUserOwnCourseRule verifyUserOwnCourseRule;
@@ -37,6 +39,7 @@ public class CourseFacade implements CourseUseCase {
         CourseModel course = courseService.findByIdOrThrow(idCourse);
         CreateCourseResponseDtoV1 response = courseMapper.toResponse(course);
         response.setTeacherName(courseService.getTeacherName(course));
+        response.setRating(reviewService.calculateAverageRating(course.getReviews().stream().toList()));
         return response;
     }
 
@@ -51,6 +54,7 @@ public class CourseFacade implements CourseUseCase {
         CourseModel updatedCourse = courseService.updateCourse(course, courseToUpdate);
         CreateCourseResponseDtoV1 response = courseMapper.toResponse(updatedCourse);
         response.setTeacherName(courseService.getTeacherName(updatedCourse));
+        response.setRating(reviewService.calculateAverageRating(course.getReviews().stream().toList()));
         return response;
 
 
@@ -82,6 +86,7 @@ public class CourseFacade implements CourseUseCase {
 
         CreateCourseResponseDtoV1 response = courseMapper.toResponse(savedCourse);
         response.setTeacherName(currentUser.getName() + " " + currentUser.getLastname());
+        response.setRating(reviewService.calculateAverageRating(savedCourse.getReviews().stream().toList()));
 
         return response;
     }
@@ -102,6 +107,7 @@ public class CourseFacade implements CourseUseCase {
         return courses.map(course -> {
             CreateCourseResponseDtoV1 response = courseMapper.toResponse(course);
             response.setTeacherName(courseService.getTeacherName(course));
+            response.setRating(reviewService.calculateAverageRating(course.getReviews().stream().toList()));
             return response;
         });
     }
@@ -117,6 +123,7 @@ public class CourseFacade implements CourseUseCase {
         return courses.map(course -> {
             CreateCourseResponseDtoV1 response = courseMapper.toResponse(course);
             response.setTeacherName(courseService.getTeacherName(course));
+            response.setRating(reviewService.calculateAverageRating(course.getReviews().stream().toList()));
             return response;
         });
     }
@@ -131,6 +138,7 @@ public class CourseFacade implements CourseUseCase {
         return courses.map(course -> {
             CreateCourseResponseDtoV1 response = courseMapper.toResponse(course);
             response.setTeacherName(courseService.getTeacherName(course));
+            response.setRating(reviewService.calculateAverageRating(course.getReviews().stream().toList()));
             return response;
         });
     }
