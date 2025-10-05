@@ -9,7 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 
-public interface LessonRepository extends JpaRepository<LessonModel, Integer> {
+public interface LessonRepository extends JpaRepository<LessonModel, Long> {
     @Query("""
        SELECT l
        FROM LessonModel l

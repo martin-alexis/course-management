@@ -27,7 +27,7 @@ public class LessonFacade implements LessonUseCase {
     private final VerifyUserOwnCourseRule verifyUserOwnCourseRule;
 
     @Override
-    public LessonResponseDto createLesson(int idCourse, CreateLessonRequestDto request) {
+    public LessonResponseDto createLesson(Long idCourse, CreateLessonRequestDto request) {
         UserModel currentUser = authService.getCurrentUser();
 
         CourseModel course = courseService.findByIdOrThrow(idCourse);
@@ -42,7 +42,7 @@ public class LessonFacade implements LessonUseCase {
     }
 
     @Override
-    public Page<LessonResponseDto> getLessonsByCourse(int idCourse, String search, Pageable pageable) {
+    public Page<LessonResponseDto> getLessonsByCourse(Long idCourse, String search, Pageable pageable) {
         authService.getCurrentUser();
 
         CourseModel course = courseService.findByIdOrThrow(idCourse);
@@ -56,14 +56,14 @@ public class LessonFacade implements LessonUseCase {
     }
 
     @Override
-    public LessonResponseDto getById(int idLesson) {
+    public LessonResponseDto getById(Long idLesson) {
         authService.getCurrentUser();
         LessonModel lesson = lessonService.findByIdOrThrow(idLesson);
         return lessonMapper.lessonEntityToResponse(lesson);
     }
 
     @Override
-    public LessonResponseDto updateLesson(int idLesson, int idCourse, UpdateLessonRequestDto request) {
+    public LessonResponseDto updateLesson(Long idLesson, Long idCourse, UpdateLessonRequestDto request) {
         UserModel currentUser = authService.getCurrentUser();
 
         LessonModel lessonToUpdate = lessonService.findByIdOrThrow(idLesson);
@@ -80,7 +80,7 @@ public class LessonFacade implements LessonUseCase {
     }
 
     @Override
-    public void deleteLesson(int idLesson, int idCourse) {
+    public void deleteLesson(Long idLesson, Long idCourse) {
         UserModel currentUser = authService.getCurrentUser();
 
         CourseModel course = courseService.findByIdOrThrow(idCourse);

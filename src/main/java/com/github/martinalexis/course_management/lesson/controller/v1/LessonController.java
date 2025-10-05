@@ -83,7 +83,7 @@ public class LessonController {
                             examples = @ExampleObject(name = "Internal Error", value = GlobalExceptionJsonExamples.UNEXPECTED_ERROR_RESPONSE))
             )
     })
-    public ResponseEntity<LessonResponseDto> createLesson(@PathVariable int idCourse, @Valid @RequestBody CreateLessonRequestDto request) {
+    public ResponseEntity<LessonResponseDto> createLesson(@PathVariable Long idCourse, @Valid @RequestBody CreateLessonRequestDto request) {
         return ResponseEntity.status(HttpStatus.CREATED).body(lessonUseCase.createLesson(idCourse, request));
     }
 
@@ -117,7 +117,7 @@ public class LessonController {
             )
     })
     public ResponseEntity<Page<LessonResponseDto>> getLessonsByCourse(
-            @PathVariable int idCourse,
+            @PathVariable Long idCourse,
             @io.swagger.v3.oas.annotations.Parameter(description = "Page number (0-indexed)")
             @RequestParam(defaultValue = "0") int page,
             @io.swagger.v3.oas.annotations.Parameter(description = "Number of items per page")
@@ -171,7 +171,7 @@ public class LessonController {
     })
     public ResponseEntity<LessonResponseDto> getLessonById(
             @io.swagger.v3.oas.annotations.Parameter(description = "ID of the lesson to retrieve")
-            @PathVariable int idLesson) {
+            @PathVariable Long idLesson) {
         return ResponseEntity.ok(lessonUseCase.getById(idLesson));
     }
 
@@ -212,9 +212,9 @@ public class LessonController {
     })
     public ResponseEntity<Void> deleteLesson(
             @io.swagger.v3.oas.annotations.Parameter(description = "ID of the course the lesson belongs to")
-            @PathVariable int idCourse,
+            @PathVariable Long idCourse,
             @io.swagger.v3.oas.annotations.Parameter(description = "ID of the lesson to delete")
-            @PathVariable int idLesson
+            @PathVariable Long idLesson
     ) {
         lessonUseCase.deleteLesson(idLesson, idCourse);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
@@ -270,9 +270,9 @@ public class LessonController {
     })
     public ResponseEntity<LessonResponseDto> updateLesson(
             @io.swagger.v3.oas.annotations.Parameter(description = "ID of the course the lesson belongs to")
-            @PathVariable int idCourse,
+            @PathVariable Long idCourse,
             @io.swagger.v3.oas.annotations.Parameter(description = "ID of the lesson to update")
-            @PathVariable int idLesson,
+            @PathVariable Long idLesson,
             @Valid @RequestBody UpdateLessonRequestDto request) {
         return ResponseEntity.ok(lessonUseCase.updateLesson(idLesson, idCourse, request));
     }

@@ -17,7 +17,7 @@ import java.time.LocalDateTime;
 public class LessonResponseDto {
 
     @Schema(description = "Unique identifier of the lesson", example = "1")
-    private int idLesson;
+    private Long idLesson;
 
     @Schema(description = "Title of the lesson", example = "Introduction to Java")
     private String title;

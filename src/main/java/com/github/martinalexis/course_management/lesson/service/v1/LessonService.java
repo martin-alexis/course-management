@@ -46,7 +46,7 @@ public class LessonService {
         return lessonRepository.findLessonsByCourseAndFilters(course, search, pageable);
     }
 
-    public LessonModel findByIdOrThrow(int idLesson) {
+    public LessonModel findByIdOrThrow(Long idLesson) {
         return lessonRepository.findById(idLesson)
                 .orElseThrow(() -> new ResourceNotFoundException("lesson", idLesson));
     }

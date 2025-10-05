@@ -9,14 +9,14 @@ import org.springframework.data.domain.Pageable;
 
 public interface LessonUseCase {
 
-    LessonResponseDto createLesson(int idCourse, CreateLessonRequestDto request);
+    LessonResponseDto createLesson(Long idCourse, CreateLessonRequestDto request);
 
-    Page<LessonResponseDto> getLessonsByCourse(int idCourse, String search, Pageable pageable);
+    Page<LessonResponseDto> getLessonsByCourse(Long idCourse, String search, Pageable pageable);
 
-    LessonResponseDto getById(int idLesson);
+    LessonResponseDto getById(Long idLesson);
 
-    LessonResponseDto updateLesson(int idLesson, int idCourse, UpdateLessonRequestDto request);
+    LessonResponseDto updateLesson(Long idLesson, Long idCourse, UpdateLessonRequestDto request);
 
-    void deleteLesson(int idLesson, int idCourse);
+    void deleteLesson(Long idLesson, Long idCourse);
 
 }
