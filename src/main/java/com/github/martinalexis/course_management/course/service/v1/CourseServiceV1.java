@@ -39,7 +39,7 @@ public class CourseServiceV1 {
         courseRepository.delete(course);
     }
 
-    public CourseModel findByIdOrThrow(int idCourse) {
+    public CourseModel findByIdOrThrow(Long idCourse) {
         return courseRepository.findById(idCourse)
                 .orElseThrow(() -> new ResourceNotFoundException("course", idCourse));
     }
@@ -53,11 +53,11 @@ public class CourseServiceV1 {
         return courseRepository.findByTitleContainingIgnoreCaseOrDescriptionContainingIgnoreCase(title, description, pageable);
     }
 
-    public Page<CourseModel> findTeacherCoursesWithSearch(int idUser, String search, Pageable pageable) {
+    public Page<CourseModel> findTeacherCoursesWithSearch(Long idUser, String search, Pageable pageable) {
         return courseRepository.findCoursesWithRoleAndSearch(idUser, RoleEnum.TEACHER, search, pageable);
     }
 
-    public Page<CourseModel> findStudentCoursesWithSearch(int idUser, String search, Pageable pageable) {
+    public Page<CourseModel> findStudentCoursesWithSearch(Long idUser, String search, Pageable pageable) {
         return courseRepository.findCoursesWithRoleAndSearch(idUser, RoleEnum.STUDENT, search, pageable);
     }
 

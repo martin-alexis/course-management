@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
 
-public interface UserHasCoursesRepository extends JpaRepository<UserHasCoursesModel, Integer> {
+public interface UserHasCoursesRepository extends JpaRepository<UserHasCoursesModel, Long> {
 
     Optional<UserHasCoursesModel> findByUserAndCourse(UserModel user, CourseModel course);
 }

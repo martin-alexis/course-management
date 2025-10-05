@@ -23,7 +23,7 @@ public class CourseModel {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_courses")
     @EqualsAndHashCode.Include
-    private Integer idCourses;
+    private Long idCourses;
 
     @Column(name = "title", nullable = false, length = 45, unique = true)
     private String title;

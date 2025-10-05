@@ -8,7 +8,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 public interface CourseUseCase {
-    EnrollCourseResponseDto enrollStudentToCourse(int idCourse);
+    EnrollCourseResponseDto enrollStudentToCourse(Long idCourse);
 
     CreateCourseResponseDto createCourse(CreateCourseRequestDto request);
 
@@ -18,10 +18,10 @@ public interface CourseUseCase {
 
     Page<CreateCourseResponseDto> getStudentCourses(String search, Pageable pageable);
 
-    CreateCourseResponseDto getById(int idCourse);
+    CreateCourseResponseDto getById(Long idCourse);
 
-    CreateCourseResponseDto updateCourse(int idCourse, UpdateCourseRequestDto request);
+    CreateCourseResponseDto updateCourse(Long idCourse, UpdateCourseRequestDto request);
 
-    void deleteCourse(int idCourse);
+    void deleteCourse(Long idCourse);
 
 }

@@ -65,7 +65,7 @@ public class CourseController {
             })),
             @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content(mediaType = "application/problem+json", schema = @Schema(implementation = ProblemDetail.class), examples = @ExampleObject(name = "Internal Error", value = GlobalExceptionJsonExamples.UNEXPECTED_ERROR_RESPONSE)))
     })
-    public ResponseEntity<EnrollCourseResponseDto> enrollingStudentToCourse(@PathVariable int idCourse) {
+    public ResponseEntity<EnrollCourseResponseDto> enrollingStudentToCourse(@PathVariable Long idCourse) {
         return ResponseEntity.status(HttpStatus.OK).body(courseUseCase.enrollStudentToCourse(idCourse));
     }
 
@@ -77,7 +77,7 @@ public class CourseController {
             @ApiResponse(responseCode = "404", description = "Course not found", content = @Content(mediaType = "application/problem+json", schema = @Schema(implementation = ProblemDetail.class), examples = @ExampleObject(name = "Resource Not Found", value = GlobalExceptionJsonExamples.RESOURCE_NOT_FOUND_RESPONSE))),
             @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content(mediaType = "application/problem+json", schema = @Schema(implementation = ProblemDetail.class), examples = @ExampleObject(name = "Internal Error", value = GlobalExceptionJsonExamples.UNEXPECTED_ERROR_RESPONSE)))
     })
-    public ResponseEntity<CreateCourseResponseDto> getById(@PathVariable int idCourse) {
+    public ResponseEntity<CreateCourseResponseDto> getById(@PathVariable Long idCourse) {
         return ResponseEntity.status(HttpStatus.OK).body(courseUseCase.getById(idCourse));
     }
 
@@ -96,7 +96,7 @@ public class CourseController {
             ),
             @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content(mediaType = "application/problem+json", schema = @Schema(implementation = ProblemDetail.class), examples = @ExampleObject(name = "Internal Error", value = GlobalExceptionJsonExamples.UNEXPECTED_ERROR_RESPONSE)))
     })
-    public ResponseEntity<CreateCourseResponseDto> updateCourse(@PathVariable int idCourse, @Valid @RequestBody UpdateCourseRequestDto request) {
+    public ResponseEntity<CreateCourseResponseDto> updateCourse(@PathVariable Long idCourse, @Valid @RequestBody UpdateCourseRequestDto request) {
         return ResponseEntity.status(HttpStatus.OK).body(courseUseCase.updateCourse(idCourse, request));
     }
 
@@ -109,7 +109,7 @@ public class CourseController {
             @ApiResponse(responseCode = "404", description = "Course not found", content = @Content(mediaType = "application/problem+json", schema = @Schema(implementation = ProblemDetail.class), examples = @ExampleObject(name = "Resource Not Found", value = GlobalExceptionJsonExamples.RESOURCE_NOT_FOUND_RESPONSE))),
             @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content(mediaType = "application/problem+json", schema = @Schema(implementation = ProblemDetail.class), examples = @ExampleObject(name = "Internal Error", value = GlobalExceptionJsonExamples.UNEXPECTED_ERROR_RESPONSE)))
     })
-    public ResponseEntity<Void> deleteCourse(@PathVariable int idCourse) {
+    public ResponseEntity<Void> deleteCourse(@PathVariable Long idCourse) {
         courseUseCase.deleteCourse(idCourse);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }

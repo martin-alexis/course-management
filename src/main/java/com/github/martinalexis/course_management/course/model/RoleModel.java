@@ -21,7 +21,7 @@ public class RoleModel {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_roles")
     @EqualsAndHashCode.Include
-    private Integer idRoles;
+    private Long idRoles;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "role", nullable = false)

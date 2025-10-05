@@ -11,7 +11,7 @@ import org.springframework.data.repository.query.Param;
 import java.util.Optional;
 
 
-public interface CourseRepository extends JpaRepository<CourseModel, Integer> {
+public interface CourseRepository extends JpaRepository<CourseModel, Long> {
     Page<CourseModel> findAll(Pageable pageable);
 
     Page<CourseModel> findByTitleContainingIgnoreCaseOrDescriptionContainingIgnoreCase(
@@ -29,7 +29,7 @@ public interface CourseRepository extends JpaRepository<CourseModel, Integer> {
                        OR LOWER(c.description) LIKE LOWER(CONCAT('%', :search, '%')))
             """)
     Page<CourseModel> findCoursesWithRoleAndSearch(
-            @Param("userId") int userId,
+            @Param("userId") Long userId,
             @Param("role") RoleEnum role,
             @Param("search") String search,
             Pageable pageable

@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class EnrollCourseResponseDto {
     @Schema(description = "Course identifier", example = "101")
-    private Integer idCourses;
+    private Long idCourses;
     @Schema(description = "Course title", example = "Introduction to Java")
     private String title;
     @Schema(description = "Course description", example = "Learn Java basics and OOP concepts")

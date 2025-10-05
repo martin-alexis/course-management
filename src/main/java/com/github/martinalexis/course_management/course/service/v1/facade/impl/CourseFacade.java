@@ -35,7 +35,7 @@ public class CourseFacade implements CourseUseCase {
     private final CourseMapper courseMapper;
 
     @Override
-    public CreateCourseResponseDto getById(int idCourse) {
+    public CreateCourseResponseDto getById(Long idCourse) {
         CourseModel course = courseService.findByIdOrThrow(idCourse);
         CreateCourseResponseDto response = courseMapper.toResponse(course);
         response.setTeacherName(courseService.getTeacherName(course));
@@ -44,7 +44,7 @@ public class CourseFacade implements CourseUseCase {
     }
 
     @Override
-    public CreateCourseResponseDto updateCourse(int idCourse, UpdateCourseRequestDto request) {
+    public CreateCourseResponseDto updateCourse(Long idCourse, UpdateCourseRequestDto request) {
         UserModel currentUser = authService.getCurrentUser();
 
         CourseModel courseToUpdate = courseService.findByIdOrThrow(idCourse);
@@ -61,7 +61,7 @@ public class CourseFacade implements CourseUseCase {
     }
 
     @Override
-    public void deleteCourse(int idCourse) {
+    public void deleteCourse(Long idCourse) {
         UserModel currentUser = authService.getCurrentUser();
 
         CourseModel courseToDelete = courseService.findByIdOrThrow(idCourse);
@@ -143,7 +143,7 @@ public class CourseFacade implements CourseUseCase {
 
     @Transactional
     @Override
-    public EnrollCourseResponseDto enrollStudentToCourse(int idCourse) {
+    public EnrollCourseResponseDto enrollStudentToCourse(Long idCourse) {
         UserModel currentUser = authService.getCurrentUser();
 
         CourseModel course = courseService.findByIdOrThrow(idCourse);

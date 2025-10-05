@@ -21,7 +21,7 @@ public class UserHasCoursesModel {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_users_has_courses")
     @EqualsAndHashCode.Include
-    private Integer idUserHasCourses;
+    private Long idUserHasCourses;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "users_id", nullable = false)
