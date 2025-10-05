@@ -15,6 +15,7 @@ import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirements;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -70,10 +71,10 @@ public class CourseController {
     }
 
     @GetMapping("/{idCourse}")
+    @SecurityRequirements
     @Operation(summary = "Get a course by ID", description = "Retrieves the details of a specific course.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Course found", content = @Content(mediaType = "application/json", schema = @Schema(implementation = CreateCourseResponseDto.class))),
-            @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content(mediaType = "application/problem+json", schema = @Schema(implementation = ProblemDetail.class), examples = @ExampleObject(name = "Unauthorized", value = AuthExceptionJsonExamples.UNAUTHORIZED_RESPONSE))),
             @ApiResponse(responseCode = "404", description = "Course not found", content = @Content(mediaType = "application/problem+json", schema = @Schema(implementation = ProblemDetail.class), examples = @ExampleObject(name = "Resource Not Found", value = GlobalExceptionJsonExamples.RESOURCE_NOT_FOUND_RESPONSE))),
             @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content(mediaType = "application/problem+json", schema = @Schema(implementation = ProblemDetail.class), examples = @ExampleObject(name = "Internal Error", value = GlobalExceptionJsonExamples.UNEXPECTED_ERROR_RESPONSE)))
     })
@@ -115,10 +116,10 @@ public class CourseController {
     }
 
     @GetMapping
+    @SecurityRequirements
     @Operation(summary = "Get all available courses", description = "Retrieves a paginated list of all courses. Can be filtered by a search term.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Courses retrieved successfully"),
-            @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content(mediaType = "application/problem+json", schema = @Schema(implementation = ProblemDetail.class), examples = @ExampleObject(name = "Unauthorized", value = AuthExceptionJsonExamples.UNAUTHORIZED_RESPONSE))),
             @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content(mediaType = "application/problem+json", schema = @Schema(implementation = ProblemDetail.class), examples = @ExampleObject(name = "Internal Error", value = GlobalExceptionJsonExamples.UNEXPECTED_ERROR_RESPONSE)))
     })
     public ResponseEntity<Page<CreateCourseResponseDto>> getAllCourses(
@@ -138,7 +139,7 @@ public class CourseController {
         return ResponseEntity.status(HttpStatus.OK).body(coursesPage);
     }
 
-    @GetMapping("/teacher")
+    @GetMapping("/teachers")
     @Operation(summary = "Get courses taught by the current user", description = "Retrieves a paginated list of courses where the authenticated user is the teacher.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Courses retrieved successfully"),
@@ -162,7 +163,7 @@ public class CourseController {
         return ResponseEntity.status(HttpStatus.OK).body(courses);
     }
 
-    @GetMapping("/student")
+    @GetMapping("/students")
     @Operation(summary = "Get courses the current user is enrolled in", description = "Retrieves a paginated list of courses where the authenticated user is enrolled as a student.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Courses retrieved successfully"),
