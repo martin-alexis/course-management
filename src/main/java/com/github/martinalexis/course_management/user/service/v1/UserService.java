@@ -17,7 +17,7 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final UserMapper userMapperV1;
 
-    public UserModel getUserById(int idUser) {
+    public UserModel getUserById(Long idUser) {
         return userRepository.findById(idUser)
                 .orElseThrow(() -> new UsernameNotFoundException("user not found"));
     }

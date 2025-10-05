@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 public class UserResponseDto {
 
     @Schema(description = "User identifier", example = "12")
-    private Integer idUser;
+    private Long idUser;
     @Schema(description = "First name", example = "Alexis")
     private String name;
     @Schema(description = "Last name", example = "Martin")

@@ -15,7 +15,7 @@ public class UserFacade implements UserUseCase {
     private final UserMapper userMapper;
 
     @Override
-    public UserResponseDto getById(int idUser) {
+    public UserResponseDto getById(Long idUser) {
         UserModel user = userService.getUserById(idUser);
         UserResponseDto response = userMapper.toDto(user);
         return response;

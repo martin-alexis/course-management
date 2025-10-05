@@ -57,7 +57,7 @@ public class UserController {
                             examples = @ExampleObject(name = "Internal Error", value = GlobalExceptionJsonExamples.UNEXPECTED_ERROR_RESPONSE))
             )
     })
-    public ResponseEntity<UserResponseDto> getUserById(@PathVariable("id") Integer id) {
+    public ResponseEntity<UserResponseDto> getUserById(@PathVariable("id") Long id) {
         UserResponseDto user = userUseCase.getById(id);
         return ResponseEntity.status(HttpStatus.OK).body(user);
     }

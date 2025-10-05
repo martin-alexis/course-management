@@ -4,6 +4,6 @@ import com.github.martinalexis.course_management.user.dto.v1.UserResponseDto;
 
 public interface UserUseCase {
 
-    UserResponseDto getById (int idUser);
+    UserResponseDto getById (Long idUser);
 
 }

@@ -17,7 +17,7 @@ public class UserModel {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_users")
     @EqualsAndHashCode.Include
-    private Integer idUser;
+    private Long idUser;
 
     @Column(nullable = false)
     private String name;
