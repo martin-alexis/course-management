@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Data
 @NoArgsConstructor
-public class CreateCourseResponseDtoV1 {
+public class CreateCourseResponseDto {
     @Schema(description = "Course identifier", example = "101")
     private Integer idCourses;
     @Schema(description = "Course title", example = "Introduction to Java")

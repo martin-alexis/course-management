@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Data
 @NoArgsConstructor
-public class UserResponseDtoV1 {
+public class UserResponseDto {
 
     @Schema(description = "User identifier", example = "12")
     private Integer idUser;

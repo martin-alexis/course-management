@@ -32,7 +32,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/v1/courses/{idCourse}/lessons")
 @Tag(name = "Lessons", description = "Endpoints for managing course lessons")
 @SecurityRequirement(name = "bearerAuth")
-public class LessonControllerV1 {
+public class LessonController {
     private final LessonUseCase lessonUseCase;
 
     @PostMapping()

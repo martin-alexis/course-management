@@ -11,7 +11,7 @@ import com.github.martinalexis.course_management.auth.service.v1.JwtService;
 import com.github.martinalexis.course_management.auth.service.v1.UserDetailsServiceImpl;
 import com.github.martinalexis.course_management.auth.service.v1.facade.AuthUseCase;
 import com.github.martinalexis.course_management.user.model.UserModel;
-import com.github.martinalexis.course_management.user.service.v1.UserServiceV1;
+import com.github.martinalexis.course_management.user.service.v1.UserService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -22,7 +22,7 @@ import org.springframework.stereotype.Service;
 public class AuthFacade implements AuthUseCase {
 
     private final AuthService authService;
-    private final UserServiceV1 userService;
+    private final UserService userService;
     private final JwtService jwtService;
     private final UserDetailsServiceImpl userDetailsService;
     private final AuthMapper authMapper;

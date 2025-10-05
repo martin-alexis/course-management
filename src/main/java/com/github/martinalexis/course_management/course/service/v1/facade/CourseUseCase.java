@@ -1,30 +1,26 @@
 package com.github.martinalexis.course_management.course.service.v1.facade;
 
-import com.github.martinalexis.course_management.course.dto.v1.CreateCourseRequestDtoV1;
-import com.github.martinalexis.course_management.course.dto.v1.CreateCourseResponseDtoV1;
-import com.github.martinalexis.course_management.course.dto.v1.EnrollCourseResponseDtoV1;
+import com.github.martinalexis.course_management.course.dto.v1.CreateCourseRequestDto;
+import com.github.martinalexis.course_management.course.dto.v1.CreateCourseResponseDto;
+import com.github.martinalexis.course_management.course.dto.v1.EnrollCourseResponseDto;
 import com.github.martinalexis.course_management.course.dto.v1.UpdateCourseRequestDto;
-import com.github.martinalexis.course_management.course.model.CourseModel;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-
-import java.util.List;
-
 public interface CourseUseCase {
-    EnrollCourseResponseDtoV1 enrollStudentToCourse(int idCourse);
+    EnrollCourseResponseDto enrollStudentToCourse(int idCourse);
 
-    CreateCourseResponseDtoV1 createCourse(CreateCourseRequestDtoV1 request);
+    CreateCourseResponseDto createCourse(CreateCourseRequestDto request);
 
-    Page<CreateCourseResponseDtoV1> getAllCourses(String search, Pageable pageable);
+    Page<CreateCourseResponseDto> getAllCourses(String search, Pageable pageable);
 
-    Page<CreateCourseResponseDtoV1> getTeacherCourses(String search, Pageable pageable);
+    Page<CreateCourseResponseDto> getTeacherCourses(String search, Pageable pageable);
 
-    Page<CreateCourseResponseDtoV1> getStudentCourses(String search, Pageable pageable);
+    Page<CreateCourseResponseDto> getStudentCourses(String search, Pageable pageable);
 
-    CreateCourseResponseDtoV1 getById(int idCourse);
+    CreateCourseResponseDto getById(int idCourse);
 
-    CreateCourseResponseDtoV1 updateCourse(int idCourse, UpdateCourseRequestDto request);
+    CreateCourseResponseDto updateCourse(int idCourse, UpdateCourseRequestDto request);
 
     void deleteCourse(int idCourse);
 

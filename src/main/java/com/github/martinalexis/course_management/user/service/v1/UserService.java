@@ -1,8 +1,7 @@
 package com.github.martinalexis.course_management.user.service.v1;
 
-import com.github.martinalexis.course_management.user.dto.v1.UserResponseDtoV1;
 import com.github.martinalexis.course_management.user.exception.v1.DuplicateEmailException;
-import com.github.martinalexis.course_management.user.mapper.v1.UserMapperV1;
+import com.github.martinalexis.course_management.user.mapper.v1.UserMapper;
 import com.github.martinalexis.course_management.user.model.UserModel;
 import com.github.martinalexis.course_management.user.repository.UserRepository;
 import lombok.AllArgsConstructor;
@@ -12,11 +11,11 @@ import org.springframework.stereotype.Service;
 
 @AllArgsConstructor
 @Service
-public class UserServiceV1 {
+public class UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    private final UserMapperV1 userMapperV1;
+    private final UserMapper userMapperV1;
 
     public UserModel getUserById(int idUser) {
         return userRepository.findById(idUser)

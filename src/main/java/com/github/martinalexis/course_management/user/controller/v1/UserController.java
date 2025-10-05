@@ -2,7 +2,7 @@ package com.github.martinalexis.course_management.user.controller.v1;
 
 import com.github.martinalexis.course_management.auth.exceptions.v1.AuthExceptionJsonExamples;
 import com.github.martinalexis.course_management.common.exceptions.GlobalExceptionJsonExamples;
-import com.github.martinalexis.course_management.user.dto.v1.UserResponseDtoV1;
+import com.github.martinalexis.course_management.user.dto.v1.UserResponseDto;
 import com.github.martinalexis.course_management.user.service.v1.facade.UserUseCase;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/v1/users")
 @Tag(name = "Users", description = "Endpoints for user information")
-public class UserControllerV1 {
+public class UserController {
 
     private final UserUseCase userUseCase;
 
@@ -36,7 +36,7 @@ public class UserControllerV1 {
             @ApiResponse(
                     responseCode = "200",
                     description = "User found successfully",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = UserResponseDtoV1.class))
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = UserResponseDto.class))
             ),
             @ApiResponse(
                     responseCode = "401",
@@ -57,8 +57,8 @@ public class UserControllerV1 {
                             examples = @ExampleObject(name = "Internal Error", value = GlobalExceptionJsonExamples.UNEXPECTED_ERROR_RESPONSE))
             )
     })
-    public ResponseEntity<UserResponseDtoV1> getUserById(@PathVariable("id") Integer id) {
-        UserResponseDtoV1 user = userUseCase.getById(id);
+    public ResponseEntity<UserResponseDto> getUserById(@PathVariable("id") Integer id) {
+        UserResponseDto user = userUseCase.getById(id);
         return ResponseEntity.status(HttpStatus.OK).body(user);
     }
 }

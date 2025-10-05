@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Data
 @NoArgsConstructor
-public class CreateCourseRequestDtoV1 {
+public class CreateCourseRequestDto {
     @Schema(description = "Course title", example = "Introduction to Java")
     @NotBlank(message = "Title cannot be blank")
     @Size(max = 45, message = "Title must be at most 45 characters")
