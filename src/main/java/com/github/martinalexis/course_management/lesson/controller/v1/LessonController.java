@@ -29,13 +29,13 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/courses/{idCourse}/lessons")
+@RequestMapping("/api/v1")
 @Tag(name = "Lessons", description = "Endpoints for managing course lessons")
 @SecurityRequirement(name = "bearerAuth")
 public class LessonController {
     private final LessonUseCase lessonUseCase;
 
-    @PostMapping()
+    @PostMapping("/courses/{idCourse}/lessons")
     @Operation(
             summary = "Create a new lesson for a course",
             description = "Creates a new lesson and associates it with a specific course. Only the teacher who owns the course can perform this action."
@@ -87,7 +87,7 @@ public class LessonController {
         return ResponseEntity.status(HttpStatus.CREATED).body(lessonUseCase.createLesson(idCourse, request));
     }
 
-    @GetMapping()
+    @GetMapping("/courses/{idCourse}/lessons")
     @Operation(
             summary = "Get all lessons for a course",
             description = "Retrieves a paginated list of all lessons associated with a specific course. Supports searching and sorting."
@@ -139,7 +139,7 @@ public class LessonController {
         return ResponseEntity.ok(lessons);
     }
 
-    @GetMapping("/{idLesson}")
+    @GetMapping("/lessons/{idLesson}")
     @Operation(
             summary = "Get a single lesson by its ID",
             description = "Retrieves the details of a specific lesson by its unique identifier."
@@ -175,7 +175,7 @@ public class LessonController {
         return ResponseEntity.ok(lessonUseCase.getById(idLesson));
     }
 
-    @DeleteMapping("/{idLesson}")
+    @DeleteMapping("/lessons/{idLesson}")
     @Operation(
             summary = "Delete a lesson",
             description = "Deletes a lesson from a course. Only the teacher who owns the course can perform this action."
@@ -220,7 +220,7 @@ public class LessonController {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
-    @PatchMapping("/{idLesson}")
+    @PatchMapping("/lessons/{idLesson}")
     @Operation(
             summary = "Update a lesson",
             description = "Updates the details of a specific lesson. Only the teacher who owns the course can perform this action."
