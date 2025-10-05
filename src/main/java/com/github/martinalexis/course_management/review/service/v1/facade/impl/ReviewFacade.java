@@ -66,7 +66,6 @@ public class ReviewFacade implements ReviewUseCase {
 
     @Override
     public CreateReviewResponseDto getById(Long idReview) {
-        authService.getCurrentUser();
 
         ReviewModel review = reviewService.findByIdOrThrow(idReview);
 
@@ -75,7 +74,6 @@ public class ReviewFacade implements ReviewUseCase {
 
     @Override
     public Page<CreateReviewResponseDto> getAllReviewsByCourse(Long idCourse, Pageable pageable) {
-        authService.getCurrentUser();
 
         CourseModel course = courseService.findByIdOrThrow(idCourse);
 

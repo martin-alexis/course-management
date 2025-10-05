@@ -15,6 +15,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.security.SecurityRequirements;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -31,7 +32,6 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @RequestMapping("/api/v1")
 @Tag(name = "Reviews", description = "Endpoints for managing course reviews")
-@SecurityRequirement(name = "bearerAuth")
 public class ReviewController {
 
     private final ReviewUseCase reviewUseCase;
@@ -133,6 +133,7 @@ public class ReviewController {
     }
 
     @GetMapping("/reviews/{idReview}")
+    @SecurityRequirements
     @Operation(
             summary = "Get a single review by its ID",
             description = "Retrieves the details of a specific review by its unique identifier. The user must be authenticated to perform this action."
@@ -142,12 +143,6 @@ public class ReviewController {
                     responseCode = "200",
                     description = "Review found successfully.",
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = CreateReviewResponseDto.class))
-            ),
-            @ApiResponse(
-                    responseCode = "401",
-                    description = "Unauthorized. A valid JWT Bearer token is required.",
-                    content = @Content(mediaType = "application/problem+json", schema = @Schema(implementation = ProblemDetail.class),
-                            examples = @ExampleObject(name = "Unauthorized", value = AuthExceptionJsonExamples.UNAUTHORIZED_RESPONSE))
             ),
             @ApiResponse(
                     responseCode = "404",
@@ -168,6 +163,7 @@ public class ReviewController {
     }
 
     @GetMapping("/courses/{idCourse}/reviews")
+    @SecurityRequirements
     @Operation(
             summary = "Get all reviews for a course",
             description = "Retrieves a paginated list of all reviews associated with a specific course. Supports sorting."
@@ -176,12 +172,6 @@ public class ReviewController {
             @ApiResponse(
                     responseCode = "200",
                     description = "Reviews retrieved successfully."
-            ),
-            @ApiResponse(
-                    responseCode = "401",
-                    description = "Unauthorized. A valid JWT Bearer token is required.",
-                    content = @Content(mediaType = "application/problem+json", schema = @Schema(implementation = ProblemDetail.class),
-                            examples = @ExampleObject(name = "Unauthorized", value = AuthExceptionJsonExamples.UNAUTHORIZED_RESPONSE))
             ),
             @ApiResponse(
                     responseCode = "404",
