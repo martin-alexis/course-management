@@ -93,7 +93,7 @@ public class AuthFacade implements AuthUseCase {
             throw new RefreshTokenExpiredException();
         }
 
-        Integer id = Integer.parseInt(idUser);
+        Long id = Long.parseLong(idUser);
         UserDetails userDetails = userDetailsService.loadUserById(id);
 
         String newAccessToken = jwtService.generateToken(userDetails);

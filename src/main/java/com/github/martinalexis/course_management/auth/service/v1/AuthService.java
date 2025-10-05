@@ -46,7 +46,7 @@ public class AuthService {
 
     public UserModel getCurrentUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        int userId = Integer.parseInt(authentication.getName());
+        Long userId = Long.parseLong(authentication.getName());
 
         return userRepository.findById(userId)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found with ID: " + userId));

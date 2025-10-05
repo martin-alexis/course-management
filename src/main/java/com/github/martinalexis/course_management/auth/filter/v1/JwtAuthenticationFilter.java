@@ -109,7 +109,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             if (idUser != null && SecurityContextHolder.getContext().getAuthentication() == null) {
                 
                 // Load user details from database
-                Integer id = Integer.parseInt(idUser);
+                Long id = Long.parseLong(idUser);
                 UserDetails userDetails = this.userDetailsService.loadUserById(id);
                 
                 // Validate JWT token against user details

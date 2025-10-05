@@ -87,7 +87,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
      * @return UserDetails object containing user authentication information
      * @throws UsernameNotFoundException if user is not found in the database
      */
-    public UserDetails loadUserById(Integer id) throws UsernameNotFoundException {
+    public UserDetails loadUserById(Long id) throws UsernameNotFoundException {
         UserModel user = userRepository.findById(id)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found with ID: " + id));
 
