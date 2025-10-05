@@ -13,6 +13,7 @@ import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirements;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -40,8 +41,8 @@ import org.springframework.web.bind.annotation.*;
 
             **Note on Current Implementation:** As the frontend is not yet implemented, the backend currently does **not** perform the final redirect. Instead, after a successful Google login, it directly returns a JSON response containing the `accessToken` and `refreshToken`. This is a temporary measure for development and testing purposes.
         """
-)@RequiredArgsConstructor
-@Slf4j
+)
+@RequiredArgsConstructor
 public class AuthController {
 
     private final AuthUseCase authUseCase;
@@ -72,10 +73,10 @@ public class AuthController {
      * @throws DuplicateEmailException if email is already registered
      */
     @PostMapping("/register")
+    @SecurityRequirements
     @Operation(
             summary = "Register a new user",
-            description = "Creates a new user account and returns access and refresh tokens.",
-            security = {}
+            description = "Creates a new user account and returns access and refresh tokens."
     )
     @ApiResponses({
             @ApiResponse(
@@ -157,10 +158,10 @@ public class AuthController {
      * @throws UsernameNotFoundException if user credentials are invalid
      */
     @PostMapping("/login")
+    @SecurityRequirements
     @Operation(
             summary = "Login with email and password",
-            description = "Authenticates a user and returns access and refresh tokens.",
-            security = {}
+            description = "Authenticates a user and returns access and refresh tokens."
     )
     @ApiResponses({
             @ApiResponse(
@@ -217,10 +218,10 @@ public class AuthController {
     }
 
     @PostMapping("/refresh")
+    @SecurityRequirements
     @Operation(
             summary = "Refresh access token",
-            description = "Generates a new access token using a valid refresh token. The refresh token itself is not changed.",
-            security = {}
+            description = "Generates a new access token using a valid refresh token. The refresh token itself is not changed."
     )
     @ApiResponses({
             @ApiResponse(
