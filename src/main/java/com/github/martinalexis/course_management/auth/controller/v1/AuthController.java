@@ -26,20 +26,26 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/v1/auth")
 @Tag(name = "Authentication",
         description = """
-        Endpoints for user authentication.
-
-        ### Authentication Flows:
-
-        1.  **Email/Password:**
-            - Use the `POST /login` endpoint with email and password.
-
-        2.  **Google OAuth2 (Social Login):**
-            - This flow must be initiated from a browser.
-            - **Step 1:** The client application must redirect the user to `GET /oauth2/authorization/google`.
-            - **Step 2 (Final Implementation):** After successful authentication with Google, the user will be redirected to a frontend URL (e.g., `https://your-frontend.com/login/oauth2/code`) with `accessToken` and `refreshToken` as URL parameters.
-            - **Step 3:** The frontend should capture these tokens from the URL and store them securely.
-
-            **Note on Current Implementation:** As the frontend is not yet implemented, the backend currently does **not** perform the final redirect. Instead, after a successful Google login, it directly returns a JSON response containing the `accessToken` and `refreshToken`. This is a temporary measure for development and testing purposes.
+        ## Overview
+        
+        Authentication endpoints supporting email/password and OAuth2 social login.
+        
+        ---
+        
+        ## Methods
+        
+        ### Email/Password
+        Use `POST /login` with user credentials.
+        
+        ### Google OAuth2
+        
+        **Browser Flow:**
+        1. Redirect to `GET /oauth2/authorization/google`
+        2. User authenticates with Google
+        3. Callback to `https://your-frontend.com/login/oauth2/code`
+        4. Tokens provided as URL parameters: `accessToken`, `refreshToken`
+        
+        **⚠️ Development Mode:** Currently returns JSON response with tokens instead of redirect.
         """
 )
 @RequiredArgsConstructor
