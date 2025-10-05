@@ -31,7 +31,6 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @RequestMapping("/api/v1")
 @Tag(name = "Lessons", description = "Endpoints for managing course lessons")
-@SecurityRequirement(name = "bearerAuth")
 public class LessonController {
     private final LessonUseCase lessonUseCase;
 
