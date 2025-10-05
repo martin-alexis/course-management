@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class CreateReviewResponseDto {
     @Schema(description = "The ID of the review.", example = "1")
-    private Integer idReview;
+    private Long idReview;
 
     @Schema(description = "Optional comment for the review.", example = "This course was amazing, I learned a lot!")
     private String comment;

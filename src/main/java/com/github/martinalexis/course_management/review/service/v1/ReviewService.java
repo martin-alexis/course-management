@@ -30,7 +30,7 @@ public class ReviewService {
         reviewRepository.delete(review);
 
     }
-    public ReviewModel findByIdOrThrow(int idReview) {
+    public ReviewModel findByIdOrThrow(Long idReview) {
         return reviewRepository.findById(idReview).orElseThrow(() -> new ResourceNotFoundException("Review", idReview));
     }
 

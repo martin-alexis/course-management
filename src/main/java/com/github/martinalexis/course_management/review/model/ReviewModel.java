@@ -8,7 +8,6 @@ import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import lombok.*;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
@@ -25,7 +24,7 @@ public class ReviewModel {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_reviews")
     @EqualsAndHashCode.Include
-    private Integer idReview;
+    private Long idReview;
 
     @Column(name = "comment", columnDefinition = "TEXT")
     private String comment;

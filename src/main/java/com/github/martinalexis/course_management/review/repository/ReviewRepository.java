@@ -9,7 +9,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
 
-public interface ReviewRepository extends JpaRepository<ReviewModel, Integer> {
+public interface ReviewRepository extends JpaRepository<ReviewModel, Long> {
     Optional<ReviewModel> findByUserAndCourse(UserModel user, CourseModel course);
 
     Page<ReviewModel> findByCourse(CourseModel course, Pageable pageable);

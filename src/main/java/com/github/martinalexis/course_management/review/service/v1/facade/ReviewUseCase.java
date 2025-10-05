@@ -7,12 +7,12 @@ import org.springframework.data.domain.Pageable;
 
 public interface ReviewUseCase {
 
-    CreateReviewResponseDto createReview(int idCourse, CreateReviewRequestDto request);
+    CreateReviewResponseDto createReview(Long idCourse, CreateReviewRequestDto request);
 
-    void deleteReview(int idReview);
+    void deleteReview(Long idReview);
 
-    CreateReviewResponseDto getById (int idReview);
+    CreateReviewResponseDto getById (Long idReview);
 
-    Page<CreateReviewResponseDto> getAllReviewsByCourse(int idCourse, Pageable pageable);
+    Page<CreateReviewResponseDto> getAllReviewsByCourse(Long idCourse, Pageable pageable);
 
 }

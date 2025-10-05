@@ -85,7 +85,7 @@ public class ReviewController {
             )
     })
     public ResponseEntity<CreateReviewResponseDto> createReview(
-            @Parameter(description = "ID of the course to be reviewed") @PathVariable int idCourse,
+            @Parameter(description = "ID of the course to be reviewed") @PathVariable Long idCourse,
             @Valid @RequestBody CreateReviewRequestDto request) {
         return ResponseEntity.status(HttpStatus.CREATED).body(reviewUseCase.createReview(idCourse, request));
     }
@@ -126,7 +126,7 @@ public class ReviewController {
             )
     })
     public ResponseEntity<Void> deleteReview(
-            @Parameter(description = "ID of the review to delete") @PathVariable int idReview) {
+            @Parameter(description = "ID of the review to delete") @PathVariable Long idReview) {
         reviewUseCase.deleteReview(idReview);
         return ResponseEntity.noContent().build();
 
@@ -163,7 +163,7 @@ public class ReviewController {
             )
     })
     public ResponseEntity<CreateReviewResponseDto> getReview(
-            @Parameter(description = "ID of the review to retrieve") @PathVariable int idReview) {
+            @Parameter(description = "ID of the review to retrieve") @PathVariable Long idReview) {
         return ResponseEntity.ok(reviewUseCase.getById(idReview));
     }
 
@@ -176,7 +176,6 @@ public class ReviewController {
             @ApiResponse(
                     responseCode = "200",
                     description = "Reviews retrieved successfully."
-                    // El tipo de contenido (Page<CreateReviewResponseDto>) es inferido por SpringDoc
             ),
             @ApiResponse(
                     responseCode = "401",
@@ -198,7 +197,7 @@ public class ReviewController {
             )
     })
     public ResponseEntity<Page<CreateReviewResponseDto>> getReviewsByCourse(
-            @Parameter(description = "ID of the course to get reviews from") @PathVariable int idCourse,
+            @Parameter(description = "ID of the course to get reviews from") @PathVariable Long idCourse,
             @Parameter(description = "Page number (0-indexed)") @RequestParam(defaultValue = "0") int page,
             @Parameter(description = "Number of items per page") @RequestParam(defaultValue = "10") int size,
             @Parameter(description = "Field to sort by (e.g., 'createdOn', 'score')") @RequestParam(defaultValue = "createdOn") String sortBy,

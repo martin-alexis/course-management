@@ -33,7 +33,7 @@ public class ReviewFacade implements ReviewUseCase {
     private final VerifyReviewBelongsToUserRule verifyReviewBelongsToUserRule;
 
     @Override
-    public CreateReviewResponseDto createReview(int idCourse, CreateReviewRequestDto request) {
+    public CreateReviewResponseDto createReview(Long idCourse, CreateReviewRequestDto request) {
         UserModel currentUser = authService.getCurrentUser();
 
         CourseModel course = courseService.findByIdOrThrow(idCourse);
@@ -50,7 +50,7 @@ public class ReviewFacade implements ReviewUseCase {
     }
 
     @Override
-    public void deleteReview(int idReview) {
+    public void deleteReview(Long idReview) {
         UserModel currentUser = authService.getCurrentUser();
 
         ReviewModel review = reviewService.findByIdOrThrow(idReview);
@@ -65,7 +65,7 @@ public class ReviewFacade implements ReviewUseCase {
     }
 
     @Override
-    public CreateReviewResponseDto getById(int idReview) {
+    public CreateReviewResponseDto getById(Long idReview) {
         authService.getCurrentUser();
 
         ReviewModel review = reviewService.findByIdOrThrow(idReview);
@@ -74,7 +74,7 @@ public class ReviewFacade implements ReviewUseCase {
     }
 
     @Override
-    public Page<CreateReviewResponseDto> getAllReviewsByCourse(int idCourse, Pageable pageable) {
+    public Page<CreateReviewResponseDto> getAllReviewsByCourse(Long idCourse, Pageable pageable) {
         authService.getCurrentUser();
 
         CourseModel course = courseService.findByIdOrThrow(idCourse);
