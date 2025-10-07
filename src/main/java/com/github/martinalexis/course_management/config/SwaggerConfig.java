@@ -13,8 +13,20 @@ import org.springframework.http.HttpHeaders;
 @OpenAPIDefinition(
         info = @Info(
                 title = "Course Management API",
-                description = "API for managing CourseModel, users, and authentication. " +
-                        "It supports local user registration and login (JWT) as well as OAuth2 providers (Google).",
+                description = """
+                        ## About the Project
+                        The Course Management API is a robust backend solution for the comprehensive management of an e-learning platform. It allows instructors and students to interact in an educational ecosystem where content can be created, published, searched, and consumed efficiently and securely.
+
+                        ---
+
+                        ### What does the API allow you to do?
+                        - **Create and manage courses:** Instructors (with the `TEACHER` role) can create, update, and delete their own courses, defining titles and descriptions.
+                        - **Manage educational content (Lessons):** Within each course, instructors can add, modify, and delete lessons to structure their teaching material.
+                        - **Enroll users in courses:** The system allows users to be enrolled in courses with specific roles (`TEACHER` or `STUDENT`). A user's role is course-specific, meaning they can be a `STUDENT` in one course and a `TEACHER` in another, which controls their access and permissions for each course individually.
+                        - **Publish and manage reviews:** Students (with the `STUDENT` role) can post reviews and ratings for the courses they are enrolled in, fostering feedback and community.
+                        - **Explore and search for courses:** Users can search for available courses on the platform, facilitating the discovery of new content.
+                        - **Authentication and user management:** It supports a secure authentication system with registration and login via email/password, as well as social login with Google. Endpoint security is managed with JWT.
+                        """,
                 version = "1.0.0",
                 contact = @Contact(
                         name = "Alexis Martin",
@@ -25,11 +37,15 @@ import org.springframework.http.HttpHeaders;
         servers = {
                 @Server(
                         description = "Development Server",
-                        url = "http://localhost:8080"
+                        url = "https://course-management-dev.onrender.com"
+                ),
+                @Server(
+                        description = "Staging Server",
+                        url = "https://course-management-stg.onrender.com"
                 ),
                 @Server(
                         description = "Production Server",
-                        url = "-"
+                        url = "https://course-management-prod.onrender.com"
                 )
         },
         security = @SecurityRequirement(
@@ -38,7 +54,7 @@ import org.springframework.http.HttpHeaders;
 )
 @SecurityScheme(
         name = "Bearer Authentication",
-        description = "A JWT Token is required to access protected endpoints. " +
+        description = "A JWT token is required to access protected endpoints. " +
                 "Obtain the token from the login endpoint and paste it here in the format 'Bearer {token}'.",
         type = SecuritySchemeType.HTTP,
         paramName = HttpHeaders.AUTHORIZATION,
