@@ -1,5 +1,13 @@
 package com.github.martinalexis.course_management.user.exception.v1;
 
+/**
+ * Centralized JSON example payloads for User module error responses.
+ *
+ * <p>Used in OpenAPI annotations to document typical error bodies returned by the
+ * exception handlers in this module.</p>
+ *
+ * @since 1.0
+ */
 public class UserExceptionJsonExamples {
     /**
      * Example response for when a user tries to register with an email

@@ -5,6 +5,14 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * Data Transfer Object representing a public view of a user.
+ *
+ * <p>Intended for outbound responses only. It excludes sensitive information
+ * such as credentials and internal identifiers not required by clients.</p>
+ *
+ * @since 1.0
+ */
 @AllArgsConstructor
 @Data
 @NoArgsConstructor

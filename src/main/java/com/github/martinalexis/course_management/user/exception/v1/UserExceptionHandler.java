@@ -12,12 +12,28 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 
 import java.net.URI;
+/**
+ * Centralized exception translation for the User module.
+ *
+ * <p>Converts domain/service exceptions into RFC-7807 {@link ProblemDetail}
+ * to provide consistent error responses to API consumers.</p>
+ *
+ * @since 1.0
+ */
 @RequiredArgsConstructor
 @Order(1)
 @RestControllerAdvice
 public class UserExceptionHandler {
     private final Logger log = LoggerFactory.getLogger(UserExceptionHandler.class);
 
+    /**
+     * Handles missing users by translating {@link UsernameNotFoundException} into a
+     * 404 ProblemDetail.
+     *
+     * @param ex thrown when a user cannot be found
+     * @param request current web request, used to set the instance URI
+     * @return 404 ProblemDetail describing the missing resource
+     */
     @ExceptionHandler(UsernameNotFoundException.class)
     public ProblemDetail handleUserNotFound(UsernameNotFoundException ex, WebRequest request) {
         log.warn(ex.getMessage(), ex);
@@ -29,6 +45,15 @@ public class UserExceptionHandler {
         return problem;
     }
 
+    /**
+     * Handles attempts to register a duplicated email.
+     *
+     * <p>Returns a 400 ProblemDetail to communicate input validation issues at the API boundary.</p>
+     *
+     * @param ex raised when an email already exists in the system
+     * @param request current web request, used to set the instance URI
+     * @return 400 ProblemDetail describing the duplicate email violation
+     */
     @ExceptionHandler(DuplicateEmailException.class)
     public ProblemDetail handleDuplicateEmail(DuplicateEmailException ex, WebRequest request) {
         log.warn(ex.getMessage(), ex);

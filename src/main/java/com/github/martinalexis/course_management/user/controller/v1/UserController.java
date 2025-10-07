@@ -18,6 +18,18 @@ import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+/**
+ * REST controller that exposes read-only endpoints for user information.
+ *
+ * <p>This controller acts as the HTTP boundary of the User module, delegating
+ * business logic to the {@link UserUseCase} facade. Authentication is expected
+ * to be handled by the security configuration (JWT/OAuth2), and exceptions are
+ * translated into RFC-7807 responses by dedicated exception handlers.</p>
+ *
+ * <p>Base path: <code>/api/v1/users</code></p>
+ *
+ * @since 1.0
+ */
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/v1/users")
@@ -27,6 +39,15 @@ public class UserController {
     private final UserUseCase userUseCase;
 
 
+    /**
+     * Retrieves a user by its unique identifier.
+     *
+     * <p>Delegates to {@link UserUseCase#getById(Long)}. If the user does not exist, the
+     * request will result in a 404 ProblemDetail produced by the module's exception handlers.</p>
+     *
+     * @param id unique user identifier
+     * @return 200 OK with the user representation
+     */
     @GetMapping("/{id}")
     @Operation(
             summary = "Get user by id",
