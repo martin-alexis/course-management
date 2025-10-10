@@ -40,6 +40,8 @@
 - **Staging:** [https://course-management-stg.onrender.com/swagger-ui/index.html](https://course-management-stg.onrender.com/swagger-ui/index.html)
 - **Production:** [https://course-management-prod.onrender.com/swagger-ui/index.html](https://course-management-prod.onrender.com/swagger-ui/index.html)
 
+> **Note:** The API is deployed on Render's free tier. The instance may go to sleep due to inactivity. The first request might take up to a minute to process while the server wakes up. Please be patient.
+
 ---
 
 <details>
