@@ -1,0 +1,30 @@
+package com.github.martinalexis.course_management.user.dto.v1;
+
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+/**
+ * Data Transfer Object representing a public view of a user.
+ *
+ * <p>Intended for outbound responses only. It excludes sensitive information
+ * such as credentials and internal identifiers not required by clients.</p>
+ *
+ * @since 1.0
+ */
+@AllArgsConstructor
+@Data
+@NoArgsConstructor
+public class UserResponseDto {
+
+    @Schema(description = "User identifier", example = "12")
+    private Long idUser;
+    @Schema(description = "First name", example = "Alexis")
+    private String name;
+    @Schema(description = "Last name", example = "Martin")
+    private String lastname;
+    @Schema(description = "Email address", example = "alexis@example.com")
+    private String email;
+
+}
